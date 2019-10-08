@@ -4,7 +4,7 @@
 
 , oceSupport ? true, opencascade
 , ngspiceSupport ? true, libngspice
-, scriptingSupport ? true, swig, python, wxPython
+, scriptingSupport ? true, swig, python, pythonPackages
 }:
 
 assert ngspiceSupport -> libngspice != null;
@@ -12,13 +12,13 @@ assert ngspiceSupport -> libngspice != null;
 with lib;
 stdenv.mkDerivation rec {
   pname = "kicad-unstable";
-  version = "2018-06-12";
+  version = "2019-10-23";
 
   src = fetchFromGitHub {
     owner = "KICad";
     repo = "kicad-source-mirror";
-    rev = "bc7bd107d980da147ad515aeae0469ddd55c2368";
-    sha256 = "11nsx52pd3jr2wbzr11glmcs1a9r7z1mqkqx6yvlm0awbgd8qlv8";
+    rev = "10d23ad82df505a58c527347c0460c4d8fe64c4b";
+    sha256 = "09k4qgvb6cr33pn2a148w3k5lwxxqsfvz854rccbff3dmvjfbryp";
   };
 
   postPatch = ''
@@ -35,7 +35,8 @@ stdenv.mkDerivation rec {
       "-DKICAD_SCRIPTING_WXPYTHON=ON"
       # nix installs wxPython headers in wxPython package, not in wxwidget
       # as assumed. We explicitely set the header location.
-      "-DCMAKE_CXX_FLAGS=-I${wxPython}/include/wx-3.0"
+      "-DCMAKE_CXX_FLAGS=-I${pythonPackages.wxPython}/include/wx-3.0"
+      "-DwxPYTHON_INCLUDE_DIRS=${pythonPackages.wxPython}/include/wx-3.0"
     ];
 
   nativeBuildInputs = [ cmake doxygen pkgconfig ];
@@ -44,7 +45,7 @@ stdenv.mkDerivation rec {
     cairo curl openssl boost
   ] ++ optional (oceSupport) opencascade
     ++ optional (ngspiceSupport) libngspice
-    ++ optionals (scriptingSupport) [ swig python wxPython ];
+    ++ optionals (scriptingSupport) [ swig (python.withPackages (ps: with ps; [ wxPython ])) ];
 
   meta = {
     description = "Free Software EDA Suite, Nightly Development Build";
@@ -52,6 +53,5 @@ stdenv.mkDerivation rec {
     license = licenses.gpl2;
     maintainers = with maintainers; [ berce ];
     platforms = with platforms; linux;
-    broken = true;
   };
 }
