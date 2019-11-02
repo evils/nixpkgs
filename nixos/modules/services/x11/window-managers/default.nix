@@ -29,6 +29,7 @@ in
     ./jwm.nix
     ./leftwm.nix
     ./lwm.nix
+    ./matwm2.nix
     ./metacity.nix
     ./mlvwm.nix
     ./mwm.nix
