@@ -1360,6 +1360,8 @@ in
 
   clair = callPackage ../tools/admin/clair { };
 
+  clarissa = callPackage ../tools/networking/clarissa { };
+
   cloud-sql-proxy = callPackage ../tools/misc/cloud-sql-proxy { };
 
   cloudsmith-cli = callPackage ../development/tools/cloudsmith-cli { };
