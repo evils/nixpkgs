@@ -22969,6 +22969,7 @@ in
     mygui = mygui.override {
       withOgre = true;
     };
+    wxGTK30 = wxGTK30.override { withGtk2 = true; };
   };
 
   riko4 = callPackage ../games/riko4 { };
