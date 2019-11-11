@@ -2809,10 +2809,6 @@ in
     wxGTK = wxGTK30.override { withWebKit = true; };
   };
 
-  sladeUnstable = callPackage ../applications/misc/slade/git.nix {
-    wxGTK = wxGTK30;
-  };
-
   drive = callPackage ../applications/networking/drive { };
 
   driftnet = callPackage ../tools/networking/driftnet {};
