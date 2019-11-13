@@ -24183,8 +24183,10 @@ in
   kicad-with-packages3d = kicad.overrideAttrs (old: { modules = old.modules ++ [ old.passthru.packages3d ]; });
 
   kicad-unstable = callPackage ../applications/science/electronics/kicad/unstable.nix {
-    wxGTK = wxGTK30;
-    boost = boost160;
+    wxGTK = wxGTK31.override { withGtk2 = false; };
+    pythonPackages = python3Packages;
+    python = python3;
+    wxPython = python3Packages.wxPython_4_0;
   };
 
   librepcb = libsForQt5.callPackage ../applications/science/electronics/librepcb { };

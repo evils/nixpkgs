@@ -1,57 +1,162 @@
-{ wxGTK, lib, stdenv, fetchFromGitHub, cmake, libGLU, libGL, zlib
+{ lib, stdenv, fetchFromGitLab, cmake, libGLU, libGL, zlib, wxGTK
 , libX11, gettext, glew, glm, cairo, curl, openssl, boost, pkgconfig
-, doxygen, pcre, libpthreadstubs, libXdmcp
+, doxygen, pcre, libpthreadstubs, libXdmcp, makeWrapper, gnome3
+, gsettings-desktop-schemas, librsvg, hicolor-icon-theme, cups
+, fetchpatch, kicad-libraries, lndir
 
 , oceSupport ? true, opencascade
+, withOCCT ? false, opencascade-occt
 , ngspiceSupport ? true, libngspice
-, scriptingSupport ? true, swig, python, pythonPackages
+, scriptingSupport ? true, swig, python, pythonPackages, wxPython
+, debug ? false, valgrind
+, with3d ? true
 }:
+
 
 assert ngspiceSupport -> libngspice != null;
 
 with lib;
+
+# oce on aarch64 fails a test
+let
+  withOCC = (stdenv.isAarch64 && (withOCCT || oceSupport)) || (!stdenv.isAarch64 && withOCCT);
+  withOCE = oceSupport && !stdenv.isAarch64 && !withOCC;
+
+in
 stdenv.mkDerivation rec {
   pname = "kicad-unstable";
-  version = "2019-10-23";
+  version = "2019-11-27";
 
-  src = fetchFromGitHub {
-    owner = "KICad";
-    repo = "kicad-source-mirror";
-    rev = "10d23ad82df505a58c527347c0460c4d8fe64c4b";
-    sha256 = "09k4qgvb6cr33pn2a148w3k5lwxxqsfvz854rccbff3dmvjfbryp";
+  src = fetchFromGitLab {
+    group = "kicad";
+    owner = "code";
+    repo = "kicad";
+    rev = "ffcf3b01fce98f1bcbdf3b76fbc88228126be965";
+    sha256 = "0qzjv06az1xl3am5v4v09nyfjcpq1wf3137wjv7a0vh8m38dvrwk";
   };
+
+  patches = [
+    (fetchpatch {
+      url = "https://github.com/johnbeard/kicad/commit/dfb1318a3989e3d6f9f2ac33c924ca5030ea273b.patch";
+      sha256 = "00ifd3fas8lid8svzh1w67xc8kyx89qidp7gm633r014j3kjkgcd";
+    })
+  ];
 
   postPatch = ''
     substituteInPlace CMakeModules/KiCadVersion.cmake \
-      --replace no-vcs-found ${version}
+      --replace "unknown" ${version}
   '';
 
+  makeFlags = optional (debug) [ "CFLAGS+=-Og" "CFLAGS+=-ggdb" ];
+
   cmakeFlags =
-    optionals (oceSupport) [ "-DKICAD_USE_OCE=ON" "-DOCE_DIR=${opencascade}" ]
-    ++ optional (ngspiceSupport) "-DKICAD_SPICE=ON"
-    ++ optionals (scriptingSupport) [
+    optionals (scriptingSupport) [
       "-DKICAD_SCRIPTING=ON"
       "-DKICAD_SCRIPTING_MODULES=ON"
-      "-DKICAD_SCRIPTING_WXPYTHON=ON"
-      # nix installs wxPython headers in wxPython package, not in wxwidget
-      # as assumed. We explicitely set the header location.
-      "-DCMAKE_CXX_FLAGS=-I${pythonPackages.wxPython}/include/wx-3.0"
-      "-DwxPYTHON_INCLUDE_DIRS=${pythonPackages.wxPython}/include/wx-3.0"
-    ];
+      "-DKICAD_SCRIPTING_PYTHON3=ON"
+      "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+    ]
+    ++ optional (!scriptingSupport)
+      "-DKICAD_SCRIPTING=OFF"
+    ++ optional (ngspiceSupport) "-DKICAD_SPICE=ON"
+    ++ optionals (withOCE)
+      [ "-DKICAD_USE_OCE=ON" "-DOCE_DIR=${opencascade}" ]
+    ++ optionals (withOCC)
+      [ "-DKICAD_USE_OCC=ON" "-DOCC_INCLUDE_DIR=${opencascade-occt}/include/opencascade" ]
+    ++ optionals (debug) [
+      "-DCMAKE_BUILD_TYPE=Debug"
+      "-DKICAD_STDLIB_DEBUG=ON"
+      "-DKICAD_USE_VALGRIND=ON"
+    ]
+    ;
 
-  nativeBuildInputs = [ cmake doxygen pkgconfig ];
+  pythonPath =
+    optionals (scriptingSupport)
+    [ wxPython pythonPackages.six ];
+
+  nativeBuildInputs =
+    [ cmake doxygen pkgconfig lndir ]
+    ++ optionals (scriptingSupport)
+      [ pythonPackages.wrapPython makeWrapper ]
+  ;
+
   buildInputs = [
-    libGLU libGL zlib libX11 wxGTK pcre libXdmcp gettext glew glm libpthreadstubs
-    cairo curl openssl boost
-  ] ++ optional (oceSupport) opencascade
-    ++ optional (ngspiceSupport) libngspice
-    ++ optionals (scriptingSupport) [ swig (python.withPackages (ps: with ps; [ wxPython ])) ];
+    libGLU libGL zlib libX11 wxGTK pcre libXdmcp gettext
+    glew glm libpthreadstubs cairo curl openssl boost
+  ]
+  ++ optionals (scriptingSupport) [ swig python wxPython ]
+  ++ optional (ngspiceSupport) libngspice
+  ++ optional (withOCE) opencascade
+  ++ optional (withOCC) opencascade-occt
+  ++ optional (debug) valgrind
+  ;
+
+  doInstallCheck = (!debug);
+  installCheckTarget = "test";
+
+  dontStrip = debug;
+
+  postInstall = ''
+    mkdir -p $out/share
+    lndir ${kicad-libraries.i18n}/share $out/share
+  '';
+
+  makeWrapperArgs = [
+    "--prefix XDG_DATA_DIRS : ${hicolor-icon-theme}/share"
+    "--prefix XDG_DATA_DIRS : ${gnome3.defaultIconTheme}/share"
+    "--prefix XDG_DATA_DIRS : ${wxGTK.gtk}/share/gsettings-schemas/${wxGTK.gtk.name}"
+    "--prefix XDG_DATA_DIRS : ${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}"
+    # wrapGAppsHook did these, as well, no idea if it matters...
+    "--prefix XDG_DATA_DIRS : ${cups}/share"
+    "--prefix GIO_EXTRA_MODULES : ${gnome3.dconf}/lib/gio/modules"
+  ]
+  ++ optionals (ngspiceSupport) [ "--prefix LD_LIBRARY_PATH : ${libngspice}/lib" ]
+  # infinisil's workaround for #39493
+  ++ [ "--set GDK_PIXBUF_MODULE_FILE ${librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" ]
+
+  # attempt at making symbol editing work
+  #modules = with kicad-libraries.passthru; [ i18n symbols footprints templates packages3d ];
+  ++ [
+    "--set KICAD_TEMPLATE_DIR ${kicad-libraries.templates}/share"
+    "--set KICAD_SYMBOL_DIR ${kicad-libraries.symbols}/share"
+    "--set KISYSMOD ${kicad-libraries.footprints}/share"
+  ]
+  ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share" ]
+  ;
+
+  # can't add $out stuff to makeWrapperArgs...
+  # wrapGAppsHook added the $out/share, though i noticed no difference without it
+  preFixup =
+    optionalString (scriptingSupport) '' buildPythonPath "$out $pythonPath"
+    '' +
+    '' wrapProgram $out/bin/kicad $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    '' +
+    '' wrapProgram $out/bin/pcbnew $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    '' +
+    '' wrapProgram $out/bin/eeschema $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    '' +
+    '' wrapProgram $out/bin/gerbview $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    '' +
+    '' wrapProgram $out/bin/pcb_calculator $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    '' +
+    '' wrapProgram $out/bin/pl_editor $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    '' +
+    '' wrapProgram $out/bin/bitmap2component $makeWrapperArgs ''
+    + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
+    ''
+  ;
 
   meta = {
     description = "Free Software EDA Suite, Nightly Development Build";
-    homepage = http://www.kicad-pcb.org/;
+    homepage = "https://www.kicad-pcb.org/";
     license = licenses.gpl2;
-    maintainers = with maintainers; [ berce ];
+    maintainers = with maintainers; [ evils kiwi berce ];
     platforms = with platforms; linux;
   };
 }
