@@ -24183,7 +24183,8 @@ in
   kicad-with-packages3d = kicad.overrideAttrs (old: { modules = old.modules ++ [ old.passthru.packages3d ]; });
 
   kicad-unstable = callPackage ../applications/science/electronics/kicad/unstable.nix {
-    wxGTK = wxGTK31.override { withGtk2 = false; };
+    # wxGTK31 currently introduces an issue with opening the python interpreter in pcbnew
+    wxGTK = wxGTK30.override { withGtk2 = false; };
     pythonPackages = python3Packages;
     python = python3;
     wxPython = python3Packages.wxPython_4_0;
