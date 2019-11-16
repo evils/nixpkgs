@@ -24188,6 +24188,7 @@ in
     pythonPackages = python3Packages;
     python = python3;
     wxPython = python3Packages.wxPython_4_0;
+    debugBuild = true;
   };
 
   librepcb = libsForQt5.callPackage ../applications/science/electronics/librepcb { };
