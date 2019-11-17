@@ -24184,11 +24184,11 @@ in
 
   kicad-unstable = callPackage ../applications/science/electronics/kicad/unstable.nix {
     # wxGTK31 currently introduces an issue with opening the python interpreter in pcbnew
-    wxGTK = wxGTK30.override { withGtk2 = false; };
+    wxGTK = wxGTK31.override { withGtk2 = false; };
     pythonPackages = python3Packages;
     python = python3;
     wxPython = python3Packages.wxPython_4_0;
-    debugBuild = true;
+    debug = true;
   };
 
   librepcb = libsForQt5.callPackage ../applications/science/electronics/librepcb { };
