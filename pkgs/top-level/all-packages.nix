@@ -227,6 +227,8 @@ in
 
   etBook = callPackage ../data/fonts/et-book { };
 
+  etterna = callPackage ../games/etterna { };
+
   fetchbower = callPackage ../build-support/fetchbower {
     inherit (nodePackages) bower2nix;
   };
