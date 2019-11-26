@@ -16,6 +16,7 @@
 assert ngspiceSupport -> libngspice != null;
 
 with lib;
+<<<<<<< HEAD
 
 # oce on aarch64 fails a test
 let
@@ -33,6 +34,17 @@ stdenv.mkDerivation rec {
     repo = "kicad";
     rev = "ffcf3b01fce98f1bcbdf3b76fbc88228126be965";
     sha256 = "0qzjv06az1xl3am5v4v09nyfjcpq1wf3137wjv7a0vh8m38dvrwk";
+=======
+stdenv.mkDerivation rec {
+  pname = "kicad-unstable";
+  version = "2019-11-25";
+
+  src = fetchFromGitHub {
+    owner = "KiCad";
+    repo = "kicad-source-mirror";
+    rev = "7c7d9c3e3f9ac9d94b5d4e4b91969b6d07e4a18a";
+    sha256 = "17i7l1wz8lz73v1n9xa39gz2m48v9milrr96x6akjm7562wgxqiw";
+>>>>>>> kicad: switch to best try from unstable and 5.1.5
   };
 
   patches = [
@@ -154,9 +166,14 @@ stdenv.mkDerivation rec {
 
   meta = {
     description = "Free Software EDA Suite, Nightly Development Build";
+<<<<<<< HEAD
     homepage = "https://www.kicad-pcb.org/";
+=======
+    homepage = "http://www.kicad-pcb.org/";
+>>>>>>> kicad: switch to best try from unstable and 5.1.5
     license = licenses.gpl2;
     maintainers = with maintainers; [ evils kiwi berce ];
     platforms = with platforms; linux;
+    broken = stdenv.isAarch64;
   };
 }
