@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, cmake, libGLU_combined, zlib, wxGTK
+{ lib, stdenv, fetchFromGitHub, cmake, libGLU, libGL, zlib, wxGTK
 , libX11, gettext, glew, glm, cairo, curl, openssl, boost, pkgconfig
 , doxygen, pcre, libpthreadstubs, libXdmcp, makeWrapper, gnome3
 , gsettings-desktop-schemas, librsvg, hicolor-icon-theme, lndir, cups
@@ -26,14 +26,11 @@ let
     };
     nativeBuildInputs = [ cmake ];
   } // attrs);
-<<<<<<< HEAD
 
   # oce on aarch64 fails a test
   withOCC = (stdenv.isAarch64 && (withOCCT || oceSupport)) || (!stdenv.isAarch64 && withOCCT);
   withOCE = oceSupport && !stdenv.isAarch64 && !withOCC;
 
-=======
->>>>>>> kicad: switch to best try from unstable and 5.1.5
 in
 stdenv.mkDerivation rec {
   pname = "kicad";
@@ -71,7 +68,6 @@ stdenv.mkDerivation rec {
     ]
     ++ optional (!scriptingSupport)
       "-DKICAD_SCRIPTING=OFF"
-<<<<<<< HEAD
     ++ optional (ngspiceSupport) "-DKICAD_SPICE=ON"
     ++ optionals (withOCE)
       [ "-DKICAD_USE_OCE=ON" "-DOCE_DIR=${opencascade}" ]
@@ -81,11 +77,6 @@ stdenv.mkDerivation rec {
       "-DKICAD_USE_OCE=OFF"
       "-DOCC_INCLUDE_DIR=${opencascade-occt}/include/opencascade"
     ]
-=======
-    ++ optionals (oceSupport)
-      [ "-DKICAD_USE_OCE=ON" "-DOCE_DIR=${opencascade}" ]
-    ++ optional (ngspiceSupport) "-DKICAD_SPICE=ON"
->>>>>>> kicad: switch to best try from unstable and 5.1.5
     ++ optionals (debug) [
       "-DCMAKE_BUILD_TYPE=Debug"
       "-DKICAD_STDLIB_DEBUG=ON"
@@ -104,19 +95,13 @@ stdenv.mkDerivation rec {
   ;
 
   buildInputs = [
-    libGLU_combined zlib libX11 wxGTK pcre libXdmcp gettext
+    libGLU libGL zlib libX11 wxGTK pcre libXdmcp gettext
     glew glm libpthreadstubs cairo curl openssl boost
   ]
-<<<<<<< HEAD
   ++ optionals (scriptingSupport) [ swig python wxPython ]
   ++ optional (ngspiceSupport) libngspice
   ++ optional (withOCE) opencascade
   ++ optional (withOCC) opencascade-occt
-=======
-  ++ optional (oceSupport) opencascade
-  ++ optional (ngspiceSupport) libngspice
-  ++ optionals (scriptingSupport) [ swig python wxPython ]
->>>>>>> kicad: switch to best try from unstable and 5.1.5
   ++ optional (debug) valgrind
   ;
 
