@@ -4,8 +4,8 @@
 , gsettings-desktop-schemas, librsvg, hicolor-icon-theme, cups
 , fetchpatch, kicad-libraries, lndir
 
-, oceSupport ? true, opencascade
-, withOCCT ? false, opencascade-occt
+, oceSupport ? false, opencascade
+, withOCCT ? true, opencascade-occt
 , ngspiceSupport ? true, libngspice
 , scriptingSupport ? true, swig, python, pythonPackages, wxPython
 , debug ? false, valgrind
