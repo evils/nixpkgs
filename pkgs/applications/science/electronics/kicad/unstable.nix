@@ -25,14 +25,14 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "kicad-unstable";
-  version = "2019-11-27";
+  version = "2019-12-05";
 
   src = fetchFromGitLab {
     group = "kicad";
     owner = "code";
     repo = "kicad";
-    rev = "ffcf3b01fce98f1bcbdf3b76fbc88228126be965";
-    sha256 = "0qzjv06az1xl3am5v4v09nyfjcpq1wf3137wjv7a0vh8m38dvrwk";
+    rev = "65ef8c18944947c3305619032bd1aedbe8b99d64";
+    sha256 = "0p0bm2yb34gqwks3qppwzgf5nylmn85psx2wwgk34yc8hs1p7yq0";
   };
 
   patches = [
@@ -99,6 +99,11 @@ stdenv.mkDerivation rec {
   postInstall = ''
     mkdir -p $out/share
     lndir ${kicad-libraries.i18n}/share $out/share
+
+    long_shit="share/kicad/template"
+    mkdir -p $out/$long_shit
+    ln -s ${kicad-libraries.symbols}/$long_shit/sym-lib-table $out/$long_shit
+    ln -s ${kicad-libraries.footprints}/$long_shit/fp-lib-table $out/$long_shit
   '';
 
   makeWrapperArgs = [
@@ -115,13 +120,12 @@ stdenv.mkDerivation rec {
   ++ [ "--set GDK_PIXBUF_MODULE_FILE ${librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" ]
 
   # attempt at making symbol editing work
-  #modules = with kicad-libraries.passthru; [ i18n symbols footprints templates packages3d ];
   ++ [
-    "--set KICAD_TEMPLATE_DIR ${kicad-libraries.templates}/share"
-    "--set KICAD_SYMBOL_DIR ${kicad-libraries.symbols}/share"
-    "--set KISYSMOD ${kicad-libraries.footprints}/share"
+    "--set KICAD_TEMPLATE_DIR ${kicad-libraries.templates}/share/kicad/template"
+    "--set KICAD_SYMBOL_DIR ${kicad-libraries.symbols}/share/kicad/library"
+    "--set KISYSMOD ${kicad-libraries.footprints}/share/kicad/modules"
   ]
-  ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share" ]
+  ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share/kicad/modules/packages3d" ]
   ;
 
   # can't add $out stuff to makeWrapperArgs...
