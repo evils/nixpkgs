@@ -2,7 +2,7 @@
 , libX11, gettext, glew, glm, cairo, curl, openssl, boost, pkgconfig
 , doxygen, pcre, libpthreadstubs, libXdmcp, makeWrapper, gnome3
 , gsettings-desktop-schemas, librsvg, hicolor-icon-theme, lndir, cups
-, fetchpatch
+, fetchpatch, kicad-libraries
 
 , oceSupport ? false, opencascade
 , withOCCT ? true, opencascade-occt
@@ -16,21 +16,9 @@ assert ngspiceSupport -> libngspice != null;
 
 with lib;
 let
-  mkLib = version: name: sha256: attrs: stdenv.mkDerivation ({
-    name = "kicad-${name}-${version}";
-    src = fetchFromGitHub {
-      owner = "KiCad";
-      repo = "kicad-${name}";
-      rev = version;
-      inherit sha256 name;
-    };
-    nativeBuildInputs = [ cmake ];
-  } // attrs);
-
   # oce on aarch64 fails a test
   withOCC = (stdenv.isAarch64 && (withOCCT || oceSupport)) || (!stdenv.isAarch64 && withOCCT);
   withOCE = oceSupport && !stdenv.isAarch64 && !withOCC;
-
 in
 stdenv.mkDerivation rec {
   pname = "kicad";
@@ -44,18 +32,13 @@ stdenv.mkDerivation rec {
   };
 
   # quick fix for #72248
-  # should be removed if a better fix is merged
+  # should be removed if a a more permanent fix is published
   patches = [
     (fetchpatch {
       url = "https://github.com/johnbeard/kicad/commit/dfb1318a3989e3d6f9f2ac33c924ca5030ea273b.patch";
       sha256 = "00ifd3fas8lid8svzh1w67xc8kyx89qidp7gm633r014j3kjkgcd";
     })
   ];
-
-  postPatch = ''
-    substituteInPlace CMakeModules/KiCadVersion.cmake \
-      --replace "unknown" ${version}
-  '';
 
   makeFlags = optional (debug) [ "CFLAGS+=-Og" "CFLAGS+=-ggdb" ];
 
@@ -111,34 +94,13 @@ stdenv.mkDerivation rec {
 
   dontStrip = debug;
 
-  passthru = {
-    symbols = mkLib "${version}" "symbols" "048b07ffsaav1ssrchw2p870lvb4rsyb5vnniy670k7q9p16qq6h" {
-      meta.license = licenses.cc-by-sa-40;
-    };
-    templates = mkLib "${version}" "templates" "0cs3bm3zb5ngw5ldn0lzw5bvqm4kvcidyrn76438alffwiz2b15g" {
-      meta.license = licenses.cc-by-sa-40;
-    };
-    footprints = mkLib "${version}" "footprints" "1c4whgn14qhz4yqkl46w13p6rpv1k0hsc9s9h9368fxfcz9knb2j" {
-      meta.license = licenses.cc-by-sa-40;
-    };
-    i18n = mkLib "${version}" "i18n" "1rfpifl8vky1gba2angizlb2n7mwmsiai3r6ip6qma60wdj8sbd3" {
-      buildInputs = [ gettext ];
-      meta.license = licenses.gpl2; # https://github.com/KiCad/kicad-i18n/issues/3
-    };
-    packages3d = mkLib "${version}" "packages3d" "0cff2ms1bsw530kqb1fr1m2pjixyxzwa81mxgac3qpbcf8fnpvaz" {
-      hydraPlatforms = []; # this is a ~1 GiB download, occupies ~5 GiB in store
-      meta.license = licenses.cc-by-sa-40;
-    };
-  };
-
-  # TODO, figure out how to skip this step? (since we're not making the 3D models optional)
-  modules = with passthru; [ i18n symbols footprints templates ]
+  libraries = with kicad-libraries; [ i18n symbols footprints templates ]
   ++ optionals (with3d) [ packages3d ];
 
   postInstall = ''
     mkdir -p $out/share
-    for module in $modules; do
-      lndir $module/share $out/share
+    for library in $libraries; do
+      lndir $library/share $out/share
     done
   '';
 
