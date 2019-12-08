@@ -159,7 +159,7 @@ stdenv.mkDerivation rec {
   meta = {
     description = "Free Software EDA Suite, Nightly Development Build";
     homepage = "https://www.kicad-pcb.org/";
-    license = licenses.gpl2;
+    license = licenses.agpl3;
     maintainers = with maintainers; [ evils kiwi berce ];
     platforms = with platforms; linux;
   };
