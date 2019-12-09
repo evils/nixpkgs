@@ -99,11 +99,6 @@ stdenv.mkDerivation rec {
   postInstall = ''
     mkdir -p $out/share
     lndir ${kicad-libraries.i18n}/share $out/share
-
-    long_shit="share/kicad/template"
-    mkdir -p $out/$long_shit
-    ln -s ${kicad-libraries.symbols}/$long_shit/sym-lib-table $out/$long_shit
-    ln -s ${kicad-libraries.footprints}/$long_shit/fp-lib-table $out/$long_shit
   '';
 
   makeWrapperArgs = [
@@ -114,18 +109,18 @@ stdenv.mkDerivation rec {
     # wrapGAppsHook did these, as well, no idea if it matters...
     "--prefix XDG_DATA_DIRS : ${cups}/share"
     "--prefix GIO_EXTRA_MODULES : ${gnome3.dconf}/lib/gio/modules"
+
+    "--set KISYSMOD ${kicad-libraries.footprints}/share/kicad/modules"
+    "--set KICAD_SYMBOL_DIR ${kicad-libraries.symbols}/share/kicad/library"
+    "--set KICAD_TEMPLATE_DIR ${kicad-libraries.templates}/share/kicad/template"
+    "--prefix KICAD_TEMPLATE_DIR : ${kicad-libraries.symbols}/share/kicad/template"
+    "--prefix KICAD_TEMPLATE_DIR : ${kicad-libraries.footprints}/share/kicad/template"
   ]
   ++ optionals (ngspiceSupport) [ "--prefix LD_LIBRARY_PATH : ${libngspice}/lib" ]
+  ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share/kicad/modules/packages3d" ]
+
   # infinisil's workaround for #39493
   ++ [ "--set GDK_PIXBUF_MODULE_FILE ${librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" ]
-
-  # attempt at making symbol editing work
-  ++ [
-    "--set KICAD_TEMPLATE_DIR ${kicad-libraries.templates}/share/kicad/template"
-    "--set KICAD_SYMBOL_DIR ${kicad-libraries.symbols}/share/kicad/library"
-    "--set KISYSMOD ${kicad-libraries.footprints}/share/kicad/modules"
-  ]
-  ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share/kicad/modules/packages3d" ]
   ;
 
   # can't add $out stuff to makeWrapperArgs...
