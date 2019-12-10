@@ -1,8 +1,8 @@
-{ lib, stdenv, fetchFromGitHub, cmake, libGLU, libGL, zlib, wxGTK
+{ lib, stdenv, fetchFromGitLab, cmake, libGLU, libGL, zlib, wxGTK
 , libX11, gettext, glew, glm, cairo, curl, openssl, boost, pkgconfig
 , doxygen, pcre, libpthreadstubs, libXdmcp, makeWrapper, gnome3
-, gsettings-desktop-schemas, librsvg, hicolor-icon-theme, lndir, cups
-, fetchpatch, kicad-libraries
+, gsettings-desktop-schemas, librsvg, hicolor-icon-theme, cups
+, fetchpatch, kicad-libraries, lndir
 
 , oceSupport ? false, opencascade
 , withOCCT ? true, opencascade-occt
@@ -24,9 +24,10 @@ stdenv.mkDerivation rec {
   pname = "kicad";
   version = "5.1.5";
 
-  src = fetchFromGitHub {
-    owner = "KiCad";
-    repo = "kicad-source-mirror";
+  src = fetchFromGitLab {
+    group = "kicad";
+    owner = "code";
+    repo = "kicad";
     rev = version;
     sha256 = "15h3rwisjss3fdc9bam9n2wq94slhacc3fbg14bnzf4n5agsnv5b";
   };
@@ -94,14 +95,9 @@ stdenv.mkDerivation rec {
 
   dontStrip = debug;
 
-  libraries = with kicad-libraries; [ i18n symbols footprints templates ]
-  ++ optionals (with3d) [ packages3d ];
-
   postInstall = ''
     mkdir -p $out/share
-    for library in $libraries; do
-      lndir $library/share $out/share
-    done
+    lndir ${kicad-libraries.i18n}/share $out/share
   '';
 
   makeWrapperArgs = [
@@ -109,11 +105,19 @@ stdenv.mkDerivation rec {
     "--prefix XDG_DATA_DIRS : ${gnome3.defaultIconTheme}/share"
     "--prefix XDG_DATA_DIRS : ${wxGTK.gtk}/share/gsettings-schemas/${wxGTK.gtk.name}"
     "--prefix XDG_DATA_DIRS : ${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}"
-    # wrapGAppsHook did these, as well, no idea if it matters...
+    # wrapGAppsHook did these two as well, no idea if it matters...
     "--prefix XDG_DATA_DIRS : ${cups}/share"
     "--prefix GIO_EXTRA_MODULES : ${gnome3.dconf}/lib/gio/modules"
+
+    "--set KISYSMOD ${kicad-libraries.footprints}/share/kicad/modules"
+    "--set KICAD_SYMBOL_DIR ${kicad-libraries.symbols}/share/kicad/library"
+    "--set KICAD_TEMPLATE_DIR ${kicad-libraries.templates}/share/kicad/template"
+    "--prefix KICAD_TEMPLATE_DIR : ${kicad-libraries.symbols}/share/kicad/template"
+    "--prefix KICAD_TEMPLATE_DIR : ${kicad-libraries.footprints}/share/kicad/template"
   ]
   ++ optionals (ngspiceSupport) [ "--prefix LD_LIBRARY_PATH : ${libngspice}/lib" ]
+  ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share/kicad/modules/packages3d" ]
+
   # infinisil's workaround for #39493
   ++ [ "--set GDK_PIXBUF_MODULE_FILE ${librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" ]
   ;
@@ -123,13 +127,13 @@ stdenv.mkDerivation rec {
   preFixup =
     optionalString (scriptingSupport) '' buildPythonPath "$out $pythonPath"
     '' +
-    '' wrapProgram $out/bin/kicad $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share --set KICAD_SYMBOL_DIR $out/share/kicad/library --set KICAD_TEMPLATE_DIR $out/share/kicad/template --set KISYS3DMOD $out/share/kicad/modules/packages3d --set KISYSMOD $out/share/kicad/modules ''
+    '' wrapProgram $out/bin/kicad $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
     + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
     '' +
-    '' wrapProgram $out/bin/pcbnew $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share --set KISYS3DMOD $out/share/kicad/modules/packages3d ''
+    '' wrapProgram $out/bin/pcbnew $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
     + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
     '' +
-    '' wrapProgram $out/bin/eeschema $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share --set KICAD_SYMBOL_DIR $out/share/kicad/library ''
+    '' wrapProgram $out/bin/eeschema $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
     + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
     '' +
     '' wrapProgram $out/bin/gerbview $makeWrapperArgs --prefix XDG_DATA_DIRS : $out/share ''
@@ -147,8 +151,12 @@ stdenv.mkDerivation rec {
   ;
 
   meta = {
-    description = "Free Software EDA Suite";
-    homepage = "http://www.kicad-pcb.org/";
+    description = "Open Source Electronics Design Automation Suite";
+    homepage = "https://www.kicad-pcb.org/";
+    longDescription = ''
+      KiCad is an open source software suite for Electronic Design Automation.
+      The Program handles Schematic Capture, and PCB Layout with Gerber output.
+    '';
     license = licenses.agpl3;
     maintainers = with maintainers; [ evils kiwi berce ];
     platforms = with platforms; linux;
