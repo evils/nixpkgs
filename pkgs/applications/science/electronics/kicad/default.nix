@@ -49,8 +49,8 @@ let
       libVersion = {
         version = "unstable";
         libSources = {
-          i18n.rev = "f1084526305005fa53e78000f7db2d67e8a0d423";
-          i18n.sha256 = "1yhc0m4psx0rz5msb1zqn5fz6l1ynwykrsk1443g4073lmjibv74";
+          i18n.rev = "cbb0c628df898290922ad2808a018d151fa85491";
+          i18n.sha256 = "03qmgaryp18zxlpjz80yizd6k5s7vd8vii8wj53akrsy53zvg204";
           symbols.rev = "68176b08fdfd34673f4518ef6c331ad2ecf7a9a6";
           symbols.sha256 = "0kcn8pwdac5snd6vzmdw82k5x9q12nijpdss3nvi5my6g3ilwgjj";
           templates.rev = "0c0490897f803ab8b7c3dad438b7eb1f80e0417c";
