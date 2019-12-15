@@ -19,6 +19,7 @@ with lib;
 let
 
   stable = pname != "kicad-unstable";
+  baseName = if (stable) then "kicad" else "kicad-unstable";
 
   versions = {
     "kicad" = {
@@ -62,7 +63,7 @@ let
       };
     };
   };
-  versionConfig = versions.${if (stable) then "kicad" else "kicad-unstable"};
+  versionConfig = versions.${baseName};
 
   wxGTK = if (stable)
     # wxGTK3x may default to withGtk2 = false, see #73145
@@ -77,17 +78,17 @@ let
 
   kicad-libraries = callPackages ./libraries.nix versionConfig.libVersion;
   kicad-base = callPackage ./base.nix {
-    pname = if (stable) then "kicad" else "kicad-unstable";
-    inherit versions stable;
+    pname = baseName;
+    inherit versions stable baseName;
     inherit wxGTK python wxPython;
-    inherit debug with3d withI18n withOCCT oceSupport ngspiceSupport scriptingSupport;
+    inherit debug withI18n withOCCT oceSupport ngspiceSupport scriptingSupport;
   };
 
 in
 stdenv.mkDerivation rec {
 
   inherit pname;
-  version = versions.${if (stable) then "kicad" else "kicad-unstable"}.kicadVersion.version;
+  version = versions.${baseName}.kicadVersion.version;
 
   src = kicad-base;
 

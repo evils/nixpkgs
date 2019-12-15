@@ -4,13 +4,13 @@
 
 , pname ? "kicad"
 , stable ? true
+, baseName ? "kicad"
 , versions ? { }
 , oceSupport ? false, opencascade
 , withOCCT ? true, opencascade-occt
 , ngspiceSupport ? true, libngspice
 , scriptingSupport ? true, swig, python, pythonPackages, wxPython
 , debug ? false, valgrind
-, with3d ? true
 , withI18n ? true
 }:
 
@@ -19,25 +19,27 @@ assert ngspiceSupport -> libngspice != null;
 with lib;
 let
 
-  versionConfig = versions.${if (stable) then "kicad" else "kicad-unstable"};
+  versionConfig = versions.${baseName};
+  baseVersion = "${versions.${baseName}.kicadVersion.version}";
 
   # oce on aarch64 fails a test
   withOCC = (withOCCT || (stdenv.isAarch64 && oceSupport)) && (!stdenv.isAarch64 && !oceSupport);
   withOCE = oceSupport && !stdenv.isAarch64 && !withOCC;
+
   kicad-libraries = callPackages ./libraries.nix versionConfig.libVersion;
 
 in
 stdenv.mkDerivation rec {
 
   inherit pname;
-  version = "base-${versions.${if (stable) then "kicad" else "kicad-unstable"}.kicadVersion.version}";
+  version = "base-${baseVersion}";
 
   src = fetchFromGitLab (
     {
       group = "kicad";
       owner = "code";
       repo = "kicad";
-      rev = version;
+      rev = baseVersion;
     } // versionConfig.kicadVersion.src
   );
 
@@ -56,8 +58,7 @@ stdenv.mkDerivation rec {
   postPatch = optional (!stable)
   ''
     substituteInPlace CMakeModules/KiCadVersion.cmake \
-      --replace "unknown" ${version}
-    echo "replaced \"unknown\" with \"${version}\" in version name"
+      --replace "unknown" ${baseVersion}
   '';
 
   makeFlags = optional (debug) [ "CFLAGS+=-Og" "CFLAGS+=-ggdb" ];
