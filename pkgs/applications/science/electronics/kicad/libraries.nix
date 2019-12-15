@@ -1,6 +1,5 @@
 { lib, stdenv, fetchFromGitHub, cmake, gettext
-, version
-, libSources
+, version, libSources
 }:
 
 # callPackage libraries {
@@ -13,16 +12,20 @@
 with lib;
 let
   mkLib = name: attrs:
-    stdenv.mkDerivation ({
-      name = "kicad-${name}-${version}";
-      src = fetchFromGitHub ({
-        owner = "KiCad";
-        repo = "kicad-${name}";
-        rev = version;
-        inherit name;
-      } // (libSources.${name} or {}));
-      nativeBuildInputs = [ cmake ];
-    } // attrs);
+    stdenv.mkDerivation (
+      {
+        name = "kicad-${name}-${version}";
+        src = fetchFromGitHub (
+          {
+            owner = "KiCad";
+            repo = "kicad-${name}";
+            rev = version;
+            inherit name;
+          } // (libSources.${name} or {})
+        );
+        nativeBuildInputs = [ cmake ];
+      } // attrs
+    );
 in
 {
   symbols = mkLib "symbols" {

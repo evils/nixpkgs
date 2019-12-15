@@ -3,6 +3,7 @@
 , doxygen, pcre, libpthreadstubs, libXdmcp, fetchpatch, lndir, callPackages
 
 , pname ? "kicad"
+, stable ? true
 , versions ? { }
 , oceSupport ? false, opencascade
 , withOCCT ? true, opencascade-occt
@@ -11,7 +12,6 @@
 , debug ? false, valgrind
 , with3d ? true
 , withI18n ? true
-, stable
 }:
 
 assert ngspiceSupport -> libngspice != null;
@@ -32,20 +32,24 @@ stdenv.mkDerivation rec {
   inherit pname;
   version = "base-${versions.${if (stable) then "kicad" else "kicad-unstable"}.kicadVersion.version}";
 
-  src = fetchFromGitLab ({
-    group = "kicad";
-    owner = "code";
-    repo = "kicad";
-    rev = version;
-  } // versionConfig.kicadVersion.src);
+  src = fetchFromGitLab (
+    {
+      group = "kicad";
+      owner = "code";
+      repo = "kicad";
+      rev = version;
+    } // versionConfig.kicadVersion.src
+  );
 
   # quick fix for #72248
   # should be removed if a a more permanent fix is published
   patches = [
-    (fetchpatch {
-      url = "https://github.com/johnbeard/kicad/commit/dfb1318a3989e3d6f9f2ac33c924ca5030ea273b.patch";
-      sha256 = "00ifd3fas8lid8svzh1w67xc8kyx89qidp7gm633r014j3kjkgcd";
-    })
+    (
+      fetchpatch {
+        url = "https://github.com/johnbeard/kicad/commit/dfb1318a3989e3d6f9f2ac33c924ca5030ea273b.patch";
+        sha256 = "00ifd3fas8lid8svzh1w67xc8kyx89qidp7gm633r014j3kjkgcd";
+      }
+    )
   ];
 
   # tagged releases don't have "unknown"
@@ -82,11 +86,11 @@ stdenv.mkDerivation rec {
       "-DKICAD_STDLIB_DEBUG=ON"
       "-DKICAD_USE_VALGRIND=ON"
     ]
-    ;
+  ;
 
   pythonPath =
     optionals (scriptingSupport)
-    [ wxPython pythonPackages.six ];
+      [ wxPython pythonPackages.six ];
 
   nativeBuildInputs = [ cmake doxygen pkgconfig lndir ];
 

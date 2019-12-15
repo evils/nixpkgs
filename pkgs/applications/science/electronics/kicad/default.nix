@@ -77,10 +77,10 @@ let
 
   kicad-libraries = callPackages ./libraries.nix versionConfig.libVersion;
   kicad-base = callPackage ./base.nix {
-   pname = if (stable) then "kicad" else "kicad-unstable";
-   inherit versions stable;
-   inherit wxGTK python wxPython;
-   inherit debug with3d withI18n withOCCT oceSupport ngspiceSupport scriptingSupport;
+    pname = if (stable) then "kicad" else "kicad-unstable";
+    inherit versions stable;
+    inherit wxGTK python wxPython;
+    inherit debug with3d withI18n withOCCT oceSupport ngspiceSupport scriptingSupport;
   };
 
 in
