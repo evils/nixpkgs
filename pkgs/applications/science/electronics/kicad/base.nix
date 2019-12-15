@@ -23,8 +23,8 @@ let
   baseVersion = "${versions.${baseName}.kicadVersion.version}";
 
   # oce on aarch64 fails a test
-  withOCC = (withOCCT || (stdenv.isAarch64 && oceSupport)) && (!stdenv.isAarch64 && !oceSupport);
-  withOCE = oceSupport && !stdenv.isAarch64 && !withOCC;
+  withOCE = oceSupport && !stdenv.isAarch64;
+  withOCC = (withOCCT && !withOCE) || (oceSupport && stdenv.isAarch64);
 
   kicad-libraries = callPackages ./libraries.nix versionConfig.libVersion;
 
@@ -73,13 +73,12 @@ stdenv.mkDerivation rec {
     ++ optional (!scriptingSupport)
       "-DKICAD_SCRIPTING=OFF"
     ++ optional (ngspiceSupport) "-DKICAD_SPICE=ON"
+    ++ optional (!withOCE) "-DKICAD_USE_OCE=OFF"
+    ++ optional (!withOCC) "-DKICAD_USE_OCC=OFF"
     ++ optionals (withOCE)
       [ "-DKICAD_USE_OCE=ON" "-DOCE_DIR=${opencascade}" ]
     ++ optionals (withOCC) [
       "-DKICAD_USE_OCC=ON"
-      # this line is redundant on unstable...
-      # maybe may be removed on a later release
-      "-DKICAD_USE_OCE=OFF"
       "-DOCC_INCLUDE_DIR=${opencascade-occt}/include/opencascade"
     ]
     ++ optionals (debug) [
