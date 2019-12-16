@@ -91,6 +91,10 @@ stdenv.mkDerivation rec {
   version = versions.${baseName}.kicadVersion.version;
 
   src = kicad-base;
+  dontUnpack = true;
+  dontConfigure = true;
+  dontBuild = true;
+  dontFixup = true;
 
   pythonPath = optionals (scriptingSupport)
     [ wxPython pythonPackages.six ];
@@ -116,8 +120,8 @@ stdenv.mkDerivation rec {
     "--prefix KICAD_TEMPLATE_DIR : ${kicad-libraries.symbols}/share/kicad/template"
     "--prefix KICAD_TEMPLATE_DIR : ${kicad-libraries.footprints}/share/kicad/template"
   ]
-  ++ optionals (ngspiceSupport) [ "--prefix LD_LIBRARY_PATH : ${libngspice}/lib" ]
   ++ optionals (with3d) [ "--set KISYS3DMOD ${kicad-libraries.packages3d}/share/kicad/modules/packages3d" ]
+  ++ optionals (ngspiceSupport) [ "--prefix LD_LIBRARY_PATH : ${libngspice}/lib" ]
 
   # infinisil's workaround for #39493
   ++ [ "--set GDK_PIXBUF_MODULE_FILE ${librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" ]
@@ -128,7 +132,7 @@ stdenv.mkDerivation rec {
   # not sure if anything has to be done with the other stuff in kicad-base/bin
   # dxf2idf, idf2vrml, idfcyl, idfrect, kicad2step, kicad-ogltest
   installPhase =
-    optionalString (scriptingSupport) '' buildPythonPath "$out $pythonPath"
+    optionalString (scriptingSupport) '' buildPythonPath "${kicad-base} $pythonPath"
     '' +
     '' makeWrapper ${kicad-base}/bin/kicad $out/bin/kicad $makeWrapperArgs ''
     + optionalString (scriptingSupport) '' --set PYTHONPATH "$program_PYTHONPATH"
