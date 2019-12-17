@@ -55,10 +55,11 @@ stdenv.mkDerivation rec {
   ];
 
   # tagged releases don't have "unknown"
-  postPatch = optional (!stable)
-  ''
+  # kicad nightlies use git describe --dirty
+  # nix removes .git, so its approximated here
+  postPatch = ''
     substituteInPlace CMakeModules/KiCadVersion.cmake \
-      --replace "unknown" ${baseVersion}
+      --replace "unknown" ${builtins.substring 0 10 src.rev}
   '';
 
   makeFlags = optional (debug) [ "CFLAGS+=-Og" "CFLAGS+=-ggdb" ];
