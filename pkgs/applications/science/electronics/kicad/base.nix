@@ -115,9 +115,9 @@ stdenv.mkDerivation rec {
   '';
 
   meta = {
-    description = "just the built source without the libraries";
+    description = "Just the built source without the libraries";
     longDescription = ''
-      just the build products, optionally with the i18n linked in
+      Just the build products, optionally with the i18n linked in
       the libraries are passed via an env var in the wrapper, default.nix
     '';
     homepage = "https://www.kicad-pcb.org/";
