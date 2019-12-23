@@ -89,10 +89,6 @@ stdenv.mkDerivation rec {
     ]
   ;
 
-  pythonPath =
-    optionals (scriptingSupport)
-      [ wxPython pythonPackages.six ];
-
   nativeBuildInputs = [ cmake doxygen pkgconfig lndir ];
 
   buildInputs = [
