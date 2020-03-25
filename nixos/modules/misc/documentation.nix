@@ -174,6 +174,13 @@ in
       environment.pathsToLink = [ "/share/man" ];
       environment.extraOutputsToInstall = [ "man" ] ++ optional cfg.dev.enable "devman";
       environment.etc."man.conf".source = "${pkgs.man-db}/etc/man_db.conf";
+
+      system.activationScripts.apropos = ''
+        mkdir -m 0755 -p /var/cache/man
+        export PATH=${pkgs.lib.makeBinPath [ pkgs.gzip ]}:$PATH
+        ${pkgs.man-db}/bin/mandb > /dev/null
+      '';
+
     })
 
     (mkIf cfg.info.enable {
