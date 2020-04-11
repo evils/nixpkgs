@@ -20458,6 +20458,8 @@ in
 
   mbpfan = callPackage ../os-specific/linux/mbpfan { };
 
+  mce-test = callPackage ../os-specific/linux/mce-test { };
+
   mdadm = mdadm4;
   mdadm4 = callPackage ../os-specific/linux/mdadm { };
 
