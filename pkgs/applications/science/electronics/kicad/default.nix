@@ -13,6 +13,9 @@
 , debug ? false, valgrind
 , with3d ? true
 , withI18n ? true
+, symbol-path ? null
+, footprint-path ? null
+, model3d-path ? null
 }:
 
 assert ngspiceSupport -> libngspice != null;
@@ -83,13 +86,16 @@ stdenv.mkDerivation rec {
     "--prefix XDG_DATA_DIRS : ${cups}/share"
     "--prefix GIO_EXTRA_MODULES : ${gnome3.dconf}/lib/gio/modules"
 
-    "--set KISYSMOD ${footprints}/share/kicad/modules"
-    "--set KICAD_SYMBOL_DIR ${symbols}/share/kicad/library"
     "--set KICAD_TEMPLATE_DIR ${templates}/share/kicad/template"
     "--prefix KICAD_TEMPLATE_DIR : ${symbols}/share/kicad/template"
     "--prefix KICAD_TEMPLATE_DIR : ${footprints}/share/kicad/template"
   ]
-  ++ optionals (with3d) [ "--set KISYS3DMOD ${packages3d}/share/kicad/modules/packages3d" ]
+  ++ (if (symbol-path != null) then [ "--set KICAD_SYMBOL_DIR ${symbol-path}" ]
+  else [ "--set KICAD_SYMBOL_DIR ${symbols}/share/kicad/library" ])
+  ++ (if (footprint-path != null) then [ "--set KISYSMOD ${footprint-path}" ]
+  else [ "--set KISYSMOD ${footprints}/share/kicad/modules" ])
+  ++ optionals (with3d) (if (model3d-path != null) then [ "--set KISYS3DMOD ${model3d-path}" ]
+  else [ "--set KISYS3DMOD ${packages3d}/share/kicad/modules/packages3d" ])
   ++ optionals (ngspiceSupport) [ "--prefix LD_LIBRARY_PATH : ${libngspice}/lib" ]
 
   # infinisil's workaround for #39493
