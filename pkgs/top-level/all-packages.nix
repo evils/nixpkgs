@@ -169,6 +169,8 @@ in
 
   conftest = callPackage ../development/tools/conftest { };
 
+  coreboot-build = callPackage ../development/tools/coreboot { };
+
   corgi = callPackage ../development/tools/corgi { };
 
   colorz = callPackage ../tools/misc/colorz { };
