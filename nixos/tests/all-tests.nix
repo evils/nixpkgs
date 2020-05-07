@@ -352,6 +352,7 @@ in
   rasdaemon = handleTest ./rasdaemon.nix {};
   rasdaemon-edac = handleTest ./rasdaemon-edac.nix {};
   rasdaemon-aer = handleTest ./rasdaemon-aer.nix {};
+  rasdaemon-mce = handleTest ./rasdaemon-mce.nix {};
   redis = handleTest ./redis.nix {};
   redmine = handleTest ./redmine.nix {};
   restic = handleTest ./restic.nix {};
