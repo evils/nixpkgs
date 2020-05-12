@@ -39,6 +39,7 @@ in
 stdenv.mkDerivation rec {
 
   passthru.libraries = callPackages ./libraries.nix versionConfig.libVersion;
+  passthru.py = python.pkgs.kicad;
   base = callPackage ./base.nix {
     inherit versions stable baseName;
     inherit wxGTK python wxPython;
