@@ -1984,6 +1984,8 @@ in
 
   numatop = callPackage ../os-specific/linux/numatop { };
 
+  icon-slicer = callPackage ../tools/misc/icon-slicer { };
+
   iio-sensor-proxy = callPackage ../os-specific/linux/iio-sensor-proxy { };
 
   ipvsadm = callPackage ../os-specific/linux/ipvsadm { };
@@ -18136,6 +18138,8 @@ in
   open-dyslexic = callPackage ../data/fonts/open-dyslexic { };
 
   open-sans = callPackage ../data/fonts/open-sans { };
+
+  openzone-cursors = callPackage ../data/icons/openzone-cursors { };
 
   orbitron = callPackage ../data/fonts/orbitron { };
 
