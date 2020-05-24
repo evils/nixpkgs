@@ -4606,6 +4606,8 @@ in {
 
   pymc3 = callPackage ../development/python-modules/pymc3 { };
 
+  pymeta3 = callPackage ../development/python-modules/pymeta3 { };
+
   pympler = callPackage ../development/python-modules/pympler { };
 
   pymysqlsa = callPackage ../development/python-modules/pymysqlsa { };
