@@ -4604,6 +4604,8 @@ in {
     inherit (pkgs) graphviz pkgconfig; # not the python package
   };
 
+  pybars3 = callPackage ../development/python-modules/pybars3 { };
+
   pymc3 = callPackage ../development/python-modules/pymc3 { };
 
   pymeta3 = callPackage ../development/python-modules/pymeta3 { };
