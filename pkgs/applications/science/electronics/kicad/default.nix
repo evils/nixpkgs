@@ -33,7 +33,7 @@ let
 
   pythonPackages = python.pkgs;
   python = python3;
-  wxPython = pythonPackages.wxPython_4_0;
+  wxPython = pythonPackages.wxPython_410;
 
 in
 stdenv.mkDerivation rec {

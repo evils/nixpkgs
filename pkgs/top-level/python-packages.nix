@@ -6117,6 +6117,12 @@ in {
     wxGTK = pkgs.wxGTK30.override { withGtk2 = false; withWebKit = true; };
   };
 
+  # named in honour of my thinkpad T410
+  wxPython_410 = callPackage ../development/python-modules/wxPython/4.1.nix {
+    inherit (pkgs) pkgconfig;
+    wxGTK = pkgs.wxGTK31.override { withGtk2 = false; withWebKit = true; };
+  };
+
   xml2rfc = callPackage ../development/python-modules/xml2rfc { };
 
   xmlschema = callPackage ../development/python-modules/xmlschema { };
