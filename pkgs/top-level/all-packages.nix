@@ -19015,6 +19015,8 @@ in
 
   copyq = libsForQt5.callPackage ../applications/misc/copyq { };
 
+  corectrl = libsForQt5.callPackage ../applications/system/corectrl { };
+
   coriander = callPackage ../applications/video/coriander {
     inherit (gnome2) libgnomeui GConf;
   };
