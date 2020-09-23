@@ -37053,6 +37053,8 @@ with pkgs;
 
   adms = callPackage ../applications/science/electronics/adms { };
 
+  alice1 = python3.pkgs.callPackage ../applications/science/electronics/alice/1.nix { };
+
   appcsxcad = libsForQt5.callPackage ../applications/science/electronics/appcsxcad { };
 
   eagle = libsForQt5.callPackage ../applications/science/electronics/eagle/eagle.nix { };
