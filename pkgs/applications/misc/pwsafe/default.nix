@@ -1,7 +1,23 @@
-{ stdenv, fetchFromGitHub, cmake, pkgconfig, zip, gettext, perl
-, wxGTK31, libXext, libXi, libXt, libXtst, xercesc
-, qrencode, libuuid, libyubikey, yubikey-personalization
-, curl, openssl, file
+{ stdenv
+, fetchFromGitHub
+, cmake
+, pkgconfig
+, zip
+, gettext
+, perl
+, wxGTK30 # wxGTK31 3.1.4 broke for this package (for 3.53.0 as well)
+, libXext
+, libXi
+, libXt
+, libXtst
+, xercesc
+, qrencode
+, libuuid
+, libyubikey
+, yubikey-personalization
+, curl
+, openssl
+, file
 }:
 
 stdenv.mkDerivation rec {
@@ -15,13 +31,26 @@ stdenv.mkDerivation rec {
     sha256 = "1ka7xsl63v0559fzf3pwc1iqr37gwr4vq5iaxa2hzar2g28hsxvh";
   };
 
-  nativeBuildInputs = [ 
-    cmake gettext perl pkgconfig zip
+  nativeBuildInputs = [
+    cmake
+    gettext
+    perl
+    pkgconfig
+    zip
   ];
   buildInputs = [
-    libXext libXi libXt libXtst wxGTK31
-    curl qrencode libuuid openssl xercesc
-    libyubikey yubikey-personalization
+    libXext
+    libXi
+    libXt
+    libXtst
+    wxGTK30
+    curl
+    qrencode
+    libuuid
+    openssl
+    xercesc
+    libyubikey
+    yubikey-personalization
     file
   ];
 
