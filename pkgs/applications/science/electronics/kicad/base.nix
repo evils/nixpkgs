@@ -97,6 +97,7 @@ stdenv.mkDerivation rec {
   buildInputs = [
     libGLU libGL zlib libX11 wxGTK pcre libXdmcp gettext
     glew glm libpthreadstubs cairo curl openssl boost
+    wxGTK.gtk
   ]
   ++ optionals (scriptingSupport) [ swig python wxPython ]
   ++ optional (ngspiceSupport) libngspice

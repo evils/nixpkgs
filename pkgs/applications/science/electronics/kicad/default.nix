@@ -33,7 +33,9 @@ let
     else wxGTK31.override { withGtk2 = false; };
 
   python = python3;
-  wxPython = python.pkgs.wxPython_4_0;
+  wxPython = if (stable)
+    then python.pkgs.wxPython_4_0
+    else python.pkgs.wxPython_4_1;
 
 in
 stdenv.mkDerivation rec {
