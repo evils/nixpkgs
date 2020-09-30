@@ -25,17 +25,25 @@ let
   versions =  import ./versions.nix;
   versionConfig = versions.${baseName};
 
+  # withWebKit copied from wxPython's wxGTK override
+  # as we pass this wxGTK into wxPython below
   wxGTK = if (stable)
     # wxGTK3x may default to withGtk2 = false, see #73145
-    then wxGTK30.override { withGtk2 = false; }
+    then wxGTK30.override {
+      withGtk2 = false;
+      withWebKit = true;
+    }
     # wxGTK31 currently introduces an issue with opening the python interpreter in pcbnew
     # but brings high DPI support?
-    else wxGTK31.override { withGtk2 = false; };
+    else wxGTK31.override {
+      withGtk2 = false;
+      withWebKit = true;
+    };
 
   python = python3;
   wxPython = if (stable)
-    then python.pkgs.wxPython_4_0
-    else python.pkgs.wxPython_4_1;
+    then python.pkgs.wxPython_4_0.override { wxGTK = wxGTK; }
+    else python.pkgs.wxPython_4_1.override { wxGTK = wxGTK; };
 
 in
 stdenv.mkDerivation rec {
