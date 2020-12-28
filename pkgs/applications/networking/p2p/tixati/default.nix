@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation rec {
   pname = "tixati";
-  version = "2.74";
+  version = "2.78";
 
   src = fetchurl {
     url = "https://download2.tixati.com/download/tixati-${version}-1.x86_64.manualinstall.tar.gz";
-    sha256 = "1slsrqv97hnj1vxx3hw32dhqckbr05w622samjbrimh4dv8yrd29";
+    sha256 = "sha256-EbPqMhan67jWe3VDVww1+NvYZRBWv/x1yx1Jb21lBco=";
   };
 
   installPhase = ''
@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
 
   meta = with stdenv.lib; {
     description = "Torrent client";
-    homepage = "http://www.tixati.com";
+    homepage = "https://www.tixati.com";
     license = licenses.unfree;
     platforms = [ "x86_64-linux" ];
     maintainers = with maintainers; [ volth ];
