@@ -15,6 +15,7 @@
 , boost
 , pkg-config
 , doxygen
+, graphviz
 , pcre
 , libpthreadstubs
 , libXdmcp
@@ -38,7 +39,6 @@
 , debug
 , valgrind
 , withI18n
-, gtk3
 }:
 
 assert lib.asserts.assertMsg (!(withOCE && stdenv.isAarch64)) "OCE fails a test on Aarch64";
@@ -90,7 +90,13 @@ stdenv.mkDerivation rec {
     ]
   ;
 
-  nativeBuildInputs = [ cmake doxygen pkg-config lndir ];
+  nativeBuildInputs = [
+    cmake
+    doxygen
+    graphviz
+    pkg-config
+    lndir
+  ];
 
   buildInputs = [
     libGLU
@@ -98,6 +104,7 @@ stdenv.mkDerivation rec {
     zlib
     libX11
     wxGTK
+    wxGTK.gtk
     pcre
     libXdmcp
     gettext
@@ -108,7 +115,6 @@ stdenv.mkDerivation rec {
     curl
     openssl
     boost
-    gtk3
   ]
   ++ optionals (withScripting) [ swig python wxPython ]
   ++ optional (withNgspice) libngspice
