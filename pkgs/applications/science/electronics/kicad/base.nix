@@ -99,6 +99,7 @@ stdenv.mkDerivation rec {
       "-DCMAKE_BUILD_TYPE=Debug"
       "-DKICAD_STDLIB_DEBUG=ON"
       "-DKICAD_USE_VALGRIND=ON"
+      "-DKICAD_SANITIZE=ON"
     ]
   ;
 
