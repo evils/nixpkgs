@@ -43,8 +43,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "wxWidgets";
     repo = "wxWidgets";
-    rev = "v${version}";
-    sha256 = "1fwzrk6w5k0vs8kqdq5lpzdbp5c09hx740wg6mi6vgmc1r67dv67";
+    rev = "152a2079b4a54a0f26d8caf2d5929df612786bcd";
+    sha256 = "0p5r74ap25xjrc4xnw16ibk5pgbvxh5ddq7p8vfjrknskrs1wlm2";
     fetchSubmodules = true;
   };
 
