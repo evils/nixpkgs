@@ -17,12 +17,12 @@ let
 in
 buildPythonPackage rec {
   pname = "wxPython";
-  version = "4.1.0";
+  version = "4.1.1";
   disabled = isPy27;
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "12x4ci5q7qni4rkfiq6lnpn1fk8b0sfc6dck5wyxkj2sfp5pa91f";
+    sha256 = "0a1mdhdkda64lnwm1dg0dlrf9rs4gkal3lra6hpqbwn718cf7r80";
   };
 
   # https://github.com/NixOS/nixpkgs/issues/75759
@@ -47,11 +47,6 @@ buildPythonPackage rec {
         ("pangocairo", "${pango.out}/lib/libpangocairo-1.0.so"),
         ("appsvc",     None)
       ]}'
-
-    # https://github.com/wxWidgets/Phoenix/pull/1584
-    # It'll be not needed in next version because https://github.com/wxWidgets/Phoenix/pull/1699
-    substituteInPlace build.py --replace "os.environ['PYTHONPATH'] = phoenixDir()" \
-      "os.environ['PYTHONPATH'] = os.environ['PYTHONPATH'] + os.pathsep + phoenixDir()"
   '';
 
   buildPhase = ''
