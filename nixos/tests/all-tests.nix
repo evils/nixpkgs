@@ -351,6 +351,7 @@ in
   radicale = handleTest ./radicale.nix {};
   rasdaemon = handleTest ./rasdaemon.nix {};
   rasdaemon-edac = handleTest ./rasdaemon-edac.nix {};
+  rasdaemon-aer = handleTest ./rasdaemon-aer.nix {};
   redis = handleTest ./redis.nix {};
   redmine = handleTest ./redmine.nix {};
   restic = handleTest ./restic.nix {};
