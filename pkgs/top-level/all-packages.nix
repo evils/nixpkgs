@@ -1607,6 +1607,8 @@ with pkgs;
 
   fedora-backgrounds = recurseIntoAttrs (callPackage ../data/misc/fedora-backgrounds { });
 
+  clarissa = callPackage ../tools/networking/clarissa { };
+
   coconut = with python312Packages; toPythonApplication coconut;
 
   coolreader = libsForQt5.callPackage ../applications/misc/coolreader { };
