@@ -1737,6 +1737,8 @@ with pkgs;
     withDriver = false;
   };
 
+  clarissa = callPackage ../tools/networking/clarissa { };
+
   fedora-backgrounds = callPackage ../data/misc/fedora-backgrounds { };
 
   coconut = with python3Packages; toPythonApplication coconut;
