@@ -1276,6 +1276,7 @@ in
 
   clair = callPackage ../tools/admin/clair { };
 
+  clar = callPackage ../tools/networking/clarissa/clar.nix { };
   clar-oui = callPackage ../tools/networking/clarissa/oui.nix { };
   clarissa = callPackage ../tools/networking/clarissa { };
 
