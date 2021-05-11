@@ -1608,6 +1608,7 @@ with pkgs;
   fedora-backgrounds = recurseIntoAttrs (callPackage ../data/misc/fedora-backgrounds { });
 
   clarissa = callPackage ../tools/networking/clarissa { };
+  clar = callPackage ../tools/networking/clarissa/clar.nix { };
   clar-oui = callPackage ../tools/networking/clarissa/oui.nix { };
 
   coconut = with python312Packages; toPythonApplication coconut;
