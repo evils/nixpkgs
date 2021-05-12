@@ -1739,6 +1739,8 @@ with pkgs;
 
   clarissa = callPackage ../tools/networking/clarissa { };
 
+  clar-oui = callPackage ../tools/networking/clarissa/oui.nix { };
+
   fedora-backgrounds = callPackage ../data/misc/fedora-backgrounds { };
 
   coconut = with python3Packages; toPythonApplication coconut;
