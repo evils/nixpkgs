@@ -113,7 +113,7 @@ in {
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
-      postStop = "rm -f /var/run/clar/";
+      postStop = "rm -rf /var/run/clar/";
       serviceConfig = {
         User = "clarissa";
         Group = "clarissa";
