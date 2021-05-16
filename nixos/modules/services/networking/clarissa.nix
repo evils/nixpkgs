@@ -97,6 +97,16 @@ in {
   };
 
   config = mkIf cfg.enable {
+
+    users = {
+      users.clarissa = {
+        isSystemUser = true;
+        group = "clarissa";
+        description = "network census daemon user";
+      };
+      groups.clarissa = { };
+    };
+
     systemd.services.clarissa = {
       description = "the network census daemon";
       documentation = [ "https://gitlab.com/evils/clarissa" ];
@@ -105,7 +115,8 @@ in {
       wantedBy = [ "multi-user.target" ];
       postStop = "rm -f /var/run/clar/";
       serviceConfig = {
-        Type = "simple";
+        User = "clarissa";
+        Group = "clarissa";
         Restart = "always";
         RestartSec = 1;
         StartLimitBurst = 10;
