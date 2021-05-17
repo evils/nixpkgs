@@ -113,8 +113,7 @@ in {
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
-      postStop = "rm -rf /var/run/clar/";
-      serviceConfig = {
+      serviceConfig = rec {
         User = "clarissa";
         Group = "clarissa";
         Restart = "always";
@@ -135,6 +134,37 @@ in {
           + (optionalString (cfg.outputFile != "") "--output_file ${cfg.outputFile} ")
           + "${cfg.extraOptions} ";
 	TimeoutStopSec = 7;
+
+        RuntimeDirectory = "clar";
+        StateDirectory = "clar";
+        AmbientCapabilities = [ "CAP_NET_RAW" ]
+          ++ optionals (cfg.promiscuous) [ "CAP_NET_ADMIN" ];
+        CapabilityBoundingSet = AmbientCapabilities;
+        IPAddressDeny= "";
+        NoNewPrivileges = true;
+        LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+        RemoveIPC = true;
+
+        PrivateDevices = true;
+        PrivateTmp = true;
+        PrivateUsers = false;
+
+        ProtectSystem = "strict";
+        ProtectClock = true;
+        ProtectHostname = true;
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectKernelLogs = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectProc = "noaccess";
+
+        RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" "AF_NETLINK" "AF_PACKET" ];
+        RestrictNamespaces = true;
+        RestrictSUIDSGID = true;
+        RestrictRealtime = true;
+        
       };
     };
   };
