@@ -38,6 +38,7 @@ in
       after = [ "lm_sensors.service" ];
 
       serviceConfig = {
+        Restart = "always";
         ExecStart = "${pkgs.lm_sensors}/sbin/fancontrol ${configFile}";
       };
     };
