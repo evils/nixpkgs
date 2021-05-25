@@ -35,6 +35,8 @@ stdenv.mkDerivation rec {
 #      mv clar_OUI.csv > $out/share/clarissa/clar_OUI.csv
 #    '';
 
+  separateDebugInfo = true;
+
   meta = with lib; {
     description = "Near-real-time network census daemon";
     longDescription = ''
