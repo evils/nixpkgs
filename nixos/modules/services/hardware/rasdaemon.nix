@@ -105,10 +105,10 @@ in
 
     boot.initrd.kernelModules = cfg.extraModules
       ++ optionals (cfg.testing) [
-        # edac_core and amd64_edac_mod should get loaded automatically
+        # edac_core and amd64_edac should get loaded automatically
         # i7core_edac may not be, and may not be required, but should load successfully
         "edac_core"
-        "amd64_edac_mod"
+        "amd64_edac"
         "i7core_edac"
         "mce-inject"
         "aer-inject"
