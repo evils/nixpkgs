@@ -8177,6 +8177,8 @@ with pkgs;
 
   pasystray = callPackage ../tools/audio/pasystray { };
 
+  pcmemtest = callPackage ../tools/misc/pcmemtest { };
+
   pcmsolver = callPackage ../development/libraries/pcmsolver { };
 
   pgbadger = perlPackages.callPackage ../tools/misc/pgbadger { };
