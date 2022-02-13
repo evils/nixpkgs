@@ -1,7 +1,7 @@
 { lib, stdenv
 , fetchFromGitHub
-, x86 ? false
-, iso ? false
+
+, iso ? false # makes the output non-reproducible
 , dosfstools, mtools
 , xorriso
 }:
@@ -24,12 +24,15 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = lib.optionals (iso) [ dosfstools mtools xorriso ];
 
-  preBuild = if (x86) then "cd build32" else "cd build64";
+  preBuild = if (stdenv.hostPlatform.is32bit) then "cd build32" else "cd build64";
 
   makeFlags = lib.optionals (iso) [ "iso" ];
 
   installPhase = ''
-    install -Dm0444 -t $out/ memtest.*
+    install -Dm0444 -t $out/ memtest.bin
+    install -Dm0444 -t $out/ memtest.efi
+  '' + lib.optionalString (iso) ''
+    install -Dm0444 -t $out/ memtest.iso
   '';
 
   meta = with lib; {
