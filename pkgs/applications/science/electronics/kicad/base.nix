@@ -159,7 +159,7 @@ stdenv.mkDerivation rec {
   # debug builds fail all but the python test
   #doInstallCheck = !debug;
   # temporarily disabled until upstream issue 9888 is resolved
-  doInstallCheck = false;
+  doInstallCheck = !stable;
   installCheckTarget = "test";
 
   dontStrip = debug;
