@@ -10134,6 +10134,8 @@ with pkgs;
 
   scrub = callPackage ../tools/misc/scrub { };
 
+  scrutiny = callPackage ../tools/system/scrutiny { };
+
   scfbuild = python3.pkgs.callPackage ../tools/misc/scfbuild { };
 
   scriptaculous = callPackage ../development/libraries/scriptaculous { };
