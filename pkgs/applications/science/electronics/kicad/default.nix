@@ -2,7 +2,7 @@
 , fetchFromGitLab
 , gnome
 , dconf
-, wxGTK31-gtk3
+, wxGTK30-gtk3
 , makeWrapper
 , gsettings-desktop-schemas
 , hicolor-icon-theme
@@ -103,9 +103,9 @@ let
     if srcOverridep "libVersion" then srcs.libVersion
     else versionsImport.${baseName}.libVersion.version;
 
-  wxGTK = wxGTK31-gtk3;
+  wxGTK = wxGTK30-gtk3;
   python = python3;
-  wxPython = python.pkgs.wxPython_4_1;
+  wxPython = python.pkgs.wxPython_4_0;
 
   inherit (lib) concatStringsSep flatten optionalString optionals;
 in
