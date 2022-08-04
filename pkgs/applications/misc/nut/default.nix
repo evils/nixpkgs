@@ -1,36 +1,80 @@
-{ lib, stdenv, fetchurl, pkg-config, neon, libusb-compat-0_1, openssl, udev, avahi, freeipmi
-, libtool, makeWrapper, autoreconfHook, libmodbus, i2c-tools, net-snmp, gd
+{ lib
+, stdenv
+, fetchFromGitHub
+, pkg-config
+, python3
+, perl
+, neon
+, libusb
+, openssl
+, udev
+, avahi
+, freeipmi
+, libtool
+, makeWrapper
+, autoconf
+, automake
+, libmodbus
+, i2c-tools
+, net-snmp
+, gd
+
+, cppcheck
+, cppunit
+
+, asciidoc
+, libxslt
+, libxml2
+, sourceHighlight
 }:
 
 stdenv.mkDerivation rec {
   pname = "nut";
   version = "2.8.0";
 
-  src = fetchurl {
-    url = "https://networkupstools.org/source/2.8/${pname}-${version}.tar.gz";
-    sha256 = "1rdzjbvm6qyz9kz1jmdq0fszq0500q97plsknrq7qyvrv84agrf3";
+  src = fetchFromGitHub {
+    owner = "networkupstools";
+    repo = "nut";
+    rev = "v${version}";
+    hash = "sha256-i2lE6LJ1I/3Jb1mK63/G2MYyHXooAfEXY65vx6dmAj4=";
   };
 
-  buildInputs = [ neon libusb-compat-0_1 openssl udev avahi freeipmi libmodbus gd i2c-tools net-snmp ];
+  buildInputs = [ neon libusb openssl udev avahi freeipmi libmodbus gd i2c-tools net-snmp ];
 
-  nativeBuildInputs = [ autoreconfHook libtool pkg-config makeWrapper ];
+  nativeBuildInputs = [
+    python3 perl
+    autoconf automake libtool pkg-config makeWrapper
+    asciidoc libxslt libxml2 sourceHighlight
+    cppunit
+  ];
+
+  checkInputs = [ cppcheck ];
+  doCheck = true; # i'm not sure this does anything
+
+  preConfigure = ''
+    patchShebangs autogen.sh
+    patchShebangs tools/nut-usbinfo.pl
+    ./autogen.sh
+  '';
 
   configureFlags =
-    [ "--with-all"
+    [
+      "--with-all"
       "--with-ssl"
       "--without-powerman" # Until we have it ...
+      "--without-snmp" # nut-snmp.h is not generated due to not finding python to do so
       "--with-systemdsystemunitdir=$(out)/etc/systemd/system"
       "--with-systemdshutdowndir=$(out)/lib/systemd"
       "--with-systemdtmpfilesdir=$(out)/lib/tmpfiles.d"
       "--with-udev-dir=$(out)/etc/udev"
     ];
 
-  enableParallelBuilding = true;
-
   postInstall = ''
     wrapProgram $out/bin/nut-scanner --prefix LD_LIBRARY_PATH : \
-      "$out/lib:${neon}/lib:${libusb-compat-0_1.out}/lib:${avahi}/lib:${freeipmi}/lib"
+      "$out/lib:${neon}/lib:${libusb.out}/lib:${avahi}/lib:${freeipmi}/lib"
   '';
+
+  outputs = [ "out" "man" ];
 
   meta = with lib; {
     description = "Network UPS Tools";
