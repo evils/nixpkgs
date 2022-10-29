@@ -7,7 +7,7 @@
 , boost
 , doxygen
 , gtest
-, pythonSupport ? false # currently tries to install pip packages in $HOME
+, pythonSupport ? true # currently tries to install pip packages in $HOME
 , python
 }:
 
