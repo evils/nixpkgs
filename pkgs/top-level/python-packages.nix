@@ -9533,10 +9533,7 @@ self: super: with self; {
 
   pyinfra = callPackage ../development/python-modules/pyinfra { };
 
-  pysmu = toPythonModule (pkgs.libsmu.override {
-    pythonSupport = true;
-    inherit python;
-  });
+  pysmu = callPackage ../development/python-modules/pysmu { };
 
   pytibber = callPackage ../development/python-modules/pytibber { };
 
