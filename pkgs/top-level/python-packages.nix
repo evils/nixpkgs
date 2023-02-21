@@ -9534,6 +9534,7 @@ self: super: with self; {
   pyinfra = callPackage ../development/python-modules/pyinfra { };
 
   pysmu = callPackage ../development/python-modules/pysmu { };
+  pysmu-bindings = callPackage ../development/python-modules/pysmu { test-the-bindings = true; };
 
   pytibber = callPackage ../development/python-modules/pytibber { };
 

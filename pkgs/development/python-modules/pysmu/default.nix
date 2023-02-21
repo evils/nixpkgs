@@ -6,6 +6,7 @@
 , setuptools
 , cython
 , six
+, test-the-bindings ? false
 }:
 
 buildPythonPackage rec {
@@ -25,6 +26,10 @@ buildPythonPackage rec {
   ];
 
   cmakeFlags = libsmu.cmakeFlags ++ [ "-DBUILD_PYTHON=ON" ];
+
+  preBuild = if (test-the-bindings) then ''
+    cd ../bindings/python
+  '' else "";
 
   format = "pyproject";
 
