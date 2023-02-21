@@ -26,14 +26,19 @@ buildPythonApplication rec {
     libusb
     libsmu
     pysmu
+    pysmu-bindings
   ];
 
   format = "other";
 
-  dontBuild = true;
-
   installPhase = ''
+    mkdir -p $out/bin
+    cp $src/*.pyw $out/bin/
+    cp $src/*.ini $out/bin/
+    chmod +x $out/bin/*.pyw
   '';
+
+  catchConflicts = false;
 
   meta = with lib; {
     description = "Analog Devices GUI for the ADALM1000";
