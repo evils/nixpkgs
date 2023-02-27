@@ -18812,6 +18812,8 @@ with pkgs;
 
   shncpd = callPackage ../tools/networking/shncpd { };
 
+  sigrok = callPackages ../applications/science/electronics/sigrok { };
+
   sigrok-cli = callPackage ../development/tools/sigrok-cli { };
 
   silicon = callPackage ../tools/misc/silicon {

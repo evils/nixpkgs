@@ -1,0 +1,22 @@
+commit 6c77a829feb2185f6f66158a38dd667639a739bb
+Author: Evils <evils.devils@protonmail.com>
+Date:   Mon Feb 27 03:21:14 2023 +0100
+
+    Makefile.am: fix for nix
+
+diff --git a/Makefile.am b/Makefile.am
+index 63b26d6f..92384197 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -894,8 +894,9 @@ $(PDIR)/timestamp: $(PDIR)/sigrok/core/classes.i \
+ 
+ python-install:
+ 	$(AM_V_at)$(MKDIR_P) "$(DESTDIR)$(prefix)" "$(DESTDIR)$(exec_prefix)"
+-	destdir='$(DESTDIR)'; $(setup_py) install $${destdir:+"--root=$$destdir"} \
+-		--prefix "$(prefix)" --exec-prefix "$(exec_prefix)"
++	destdir='$(DESTDIR)'; $(setup_py) install --root=$${destdir:-/} \
++		--prefix "$(prefix)" --exec-prefix "$(exec_prefix)" \
++                --single-version-externally-managed
+ 
+ python-clean:
+ 	-$(AM_V_at)rm -f $(PDIR)/timestamp
