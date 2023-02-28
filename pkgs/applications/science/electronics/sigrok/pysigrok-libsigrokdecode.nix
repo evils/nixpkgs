@@ -3,29 +3,23 @@
 , fetchFromGitHub
 , python3
 
-, full ? false
 , sigrok
 }:
 
 python3.pkgs.buildPythonApplication rec {
-  pname = "pysigrok";
-  version = "aed0a9814d19551a54c0e929bf1143f78187bd98";
+  pname = "pysigrok-libsigrokdecode";
+  version = "259dbb9781b8efe58a679d573b01f5c6c1e5fa2f";
 
   src = fetchFromGitHub {
-    owner = pname;
-    repo = pname;
+    owner = "pysigrok";
+    repo = "libsigrokdecode";
     rev = version;
-    hash = "sha256-YtV6cPHpkeKNco4ce4/ZRZJmm4NUpJQ26gcJ0Yun+8k=";
+    hash = "sha256-r04WJHGd7skuP03k/cYf046Zg4eq54jWBEkuzkV8q0k=";
   };
 
   propagatedBuildInputs = with python3.pkgs; [
-    # these depend on this package...
-    #sigrok.pysigrok-hardware-raspberrypi-pico
-    #sigrok.pysigrok-libsigrokdecode
+    sigrok.pysigrok
     flit-core
-    click
-    importlib-metadata
-    pyserial
   ];
 
   format = "pyproject";
