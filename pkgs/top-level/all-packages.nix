@@ -38421,6 +38421,8 @@ with pkgs;
 
   pounce = callPackage ../servers/pounce { };
 
+  printer-driver-ptouch = callPackage ../misc/cups/drivers/ptouch { };
+
   pt = callPackage ../applications/misc/pt { };
 
   protocol = callPackage ../applications/networking/protocol { };
