@@ -27,8 +27,8 @@
     kicadVersion = {
       version =			"2023-03-17";
       src = {
-        rev =			"607622e8f8d585e0cae9c0b4fb34eec82bd93c8c";
-        sha256 =		"1d1rf03l8a93y51mq5my4mc0w2ks8bi5fmqh8f6a9l9szdp94cy6";
+        rev =			"b4bb1f4b467e309a5e530a7ab858909c33fb51fc";
+        sha256 =		"sha256-U5YnmFg/jbygDK7te7oJyOD6jj6GPPG/8X7FJyfRXEQ=";
       };
     };
     libVersion = {
