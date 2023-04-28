@@ -123,6 +123,13 @@ let self = dotnetPackages // overrides; dotnetPackages = with self; {
     preInstall = "mv -v tools/lib/* tools && rmdir -v tools/lib";
   };
 
+  UVtools = fetchNuGet {
+    pname = "UVtools.Core";
+    version = "3.13.1";
+    sha256 = "sha256-1gXU2OJEPXBdsGBUMpl7QqKIbvPqcJpmERIEZatVlmI=";
+    outputFiles = [ "lib/*" ];
+  };
+
   # SOURCE PACKAGES
 
   Boogie = buildDotnetModule rec {
