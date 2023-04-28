@@ -34424,6 +34424,8 @@ with pkgs;
 
   uvccapture = callPackage ../applications/video/uvccapture { };
 
+  uvtools = callPackage ../applications/misc/uvtools { };
+
   uwimap = callPackage ../tools/networking/uwimap { };
 
   utm = callPackage ../os-specific/darwin/utm { };
