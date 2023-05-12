@@ -35829,6 +35829,8 @@ with pkgs;
 
   dhewm3 = callPackage ../games/doom-ports/dhewm3 { };
 
+  doom-ascii = callPackage ../games/doom-ports/doom-ascii { };
+
   doomseeker = qt5.callPackage ../games/doom-ports/doomseeker { };
 
   doomretro = callPackage ../games/doom-ports/doomretro { };
