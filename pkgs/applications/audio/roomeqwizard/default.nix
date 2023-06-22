@@ -1,6 +1,7 @@
 { stdenv
 , lib
 , coreutils
+, gnome-themes-extra
 , fontconfig
 , fetchurl
 , gnused
@@ -72,13 +73,15 @@ stdenv.mkDerivation rec {
 
   FONTCONFIG_PATH="${fontconfig.out}/etc/fonts/"; # resolves a buildtime error, doesn't improve the fonts
 
+  # GTK_PATH wanted at runtime (looks for adwaita), doesn't improve looks either
   installPhase = ''
     runHook preInstall
 
     mkdir -p $out/bin $out/lib/udev/rules.d $out/share/icons/hicolor/256x256/apps
     makeWrapper $out/share/roomeqwizard/roomeqwizard $out/bin/roomeqwizard \
       --set INSTALL4J_JAVA_HOME_OVERRIDE ${jdk8} \
-      --prefix PATH : ${lib.makeBinPath [ coreutils gnused gawk ]}
+      --prefix PATH : ${lib.makeBinPath [ coreutils gnused gawk ]} \
+      --prefix GTK_PATH : "${gnome-themes-extra}/lib/gtk-2.0"
 
     cp -r "$desktopItem/share/applications" $out/share/
     cp $out/share/roomeqwizard/.install4j/s_*.png "$out/share/icons/hicolor/256x256/apps/${pname}.png"
