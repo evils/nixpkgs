@@ -1,14 +1,15 @@
-{ coreutils
-, fetchurl
-, gawk
-, gnused
-, jdk8
+{ stdenv
 , lib
-, makeDesktopItem
+, coreutils
+, fontconfig
+, fetchurl
+, gnused
+, gawk
+, jdk8
 , makeWrapper
-, stdenv
 , writeScript
 , writeTextFile
+, makeDesktopItem
 , recommendedUdevRules ? true
 }:
 
@@ -68,6 +69,8 @@ stdenv.mkDerivation rec {
 
     runHook postBuild
   '';
+
+  FONTCONFIG_PATH="${fontconfig.out}/etc/fonts/"; # resolves a buildtime error, doesn't improve the fonts
 
   installPhase = ''
     runHook preInstall
