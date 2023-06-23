@@ -16,11 +16,11 @@
 
 stdenv.mkDerivation rec {
   pname = "roomeqwizard";
-  version = "5.20.13";
+  version = "5.20.14";
 
   src = fetchurl {
-    url = "https://www.roomeqwizard.com/installers/REW_linux_no_jre_${lib.replaceStrings [ "." ] [ "_" ] version}.sh";
-    sha256 = "sha256-6zaBDOmQlyMRQ84j64oS7TMwcctT1PSbuQOUYY9QjvY=";
+    url = "https://www.roomeqwizard.com/installers/REW_linux_no_jre_${lib.replaceStrings [ "." ] [ "_" ] version}ea67.sh";
+    sha256 = "sha256-UgMEedN7//zJrZmZsTXq1qcmcF8Cu16Cs1c7AvqpzJI=";
   };
 
   dontUnpack = true;
@@ -83,8 +83,8 @@ stdenv.mkDerivation rec {
       --prefix PATH : ${lib.makeBinPath [ coreutils gnused gawk ]} \
       --prefix GTK_PATH : "${gnome-themes-extra}/lib/gtk-2.0"
 
-    cp -r "$desktopItem/share/applications" $out/share/
-    cp $out/share/roomeqwizard/.install4j/s_*.png "$out/share/icons/hicolor/256x256/apps/${pname}.png"
+    cp -r "$desktopItem/share/applications" "$out/share/"
+    cp $out/share/roomeqwizard/.install4j/${pname}.png "$out/share/icons/hicolor/256x256/apps/"
 
     ${lib.optionalString recommendedUdevRules ''echo "$udevRules" > $out/lib/udev/rules.d/90-roomeqwizard.rules''}
 
