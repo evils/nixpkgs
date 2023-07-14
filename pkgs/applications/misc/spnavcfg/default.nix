@@ -1,31 +1,34 @@
-{ stdenv, lib, fetchFromGitHub, pkg-config, gtk2 }:
+{ lib
+, stdenv
+, fetchgit
+, pkg-config
+, libspnav
+, qt5
+, git-lfs
+}:
 
 stdenv.mkDerivation rec {
   pname = "spnavcfg";
-  version = "0.3.1";
+  version = "unstable-2023-03-11"; #includes fix for https://github.com/FreeSpacenav/spnavcfg/issues/29
 
-  src = fetchFromGitHub {
-    owner = "FreeSpacenav";
-    repo = pname;
-    rev = "v${version}";
-    sha256 = "180mkdis15gxs79rr3f7hpwa1p6v81bybw37pzzdjnmqwqrc08a0";
+  src = fetchgit {
+    fetchLFS = true; # need this when building from git, otherwise we can use fetchFromGitHub
+    url = "https://github.com/FreeSpacenav/spnavcfg";
+    rev = "4d0fd40f3918810815aa2c733ff30e955c4176c1";
+    sha256 = "sha256-mSSXEr2ISaI3XEgvgtPCqL+00YOUPSX/P3zrQ4sM3T0=";
   };
 
   patches = [
     # Changes the pidfile path from /run/spnavd.pid to $XDG_RUNTIME_DIR/spnavd.pid
     # to allow for a user service
-    ./configure-pidfile-path.patch
+    #./configure-pidfile-path.patch
     # Changes the config file path from /etc/spnavrc to $XDG_CONFIG_HOME/spnavrc or $HOME/.config/spnavrc
     # to allow for a user service
-    ./configure-cfgfile-path.patch
+    #./configure-cfgfile-path.patch
   ];
 
-  postPatch = ''
-    sed -i s/4775/775/ Makefile.in
-  '';
-
-  nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ gtk2 ];
+  nativeBuildInputs = [ pkg-config qt5.wrapQtAppsHook git-lfs ];
+  buildInputs = [ libspnav qt5.qtbase ];
 
   makeFlags = [ "CC=${stdenv.cc.targetPrefix}cc" ];
 
