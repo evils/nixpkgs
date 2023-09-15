@@ -1,18 +1,17 @@
 { lib
 , buildPythonPackage
-, cargo
 , fetchFromGitHub
-, libiconv
 , pytestCheckHook
 , pythonOlder
 , rustPlatform
-, rustc
-, setuptools-rust
+, libiconv
+, dirty-equals
+, pytest-benchmark
 }:
 
 buildPythonPackage rec {
   pname = "rtoml";
-  version = "0.8";
+  version = "0.9";
 
   disabled = pythonOlder "3.7";
 
@@ -20,20 +19,18 @@ buildPythonPackage rec {
     owner = "samuelcolvin";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-tvX4KcQGw0khBjEXVFmkhsVyAkdr2Bgm6IfD1yGZ37c=";
+    hash = "sha256-Vk/0SGtYhxZFIr/WuXadypZp07kPyzZp7N/1sFSI5dk=";
   };
 
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit src;
     name = "${pname}-${version}";
-    hash = "sha256-KcF3Z71S7ZNZicViqwpClfT736nYYbKcKWylOP+S3HI=";
+    hash = "sha256-fsAClhZomJngMfV78XZl9hy+EFfpSBanjmgqmoc5ySQ=";
   };
 
   nativeBuildInputs = with rustPlatform; [
-    setuptools-rust
-    rustc
-    cargo
-    rustPlatform.cargoSetupHook
+    maturinBuildHook
+    cargoSetupHook
   ];
 
   buildInputs = [
@@ -46,10 +43,13 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytestCheckHook
+    dirty-equals
+    pytest-benchmark
   ];
 
   preCheck = ''
     cd tests
+    substituteInPlace test_benchmarks.py --replace tests/data.toml data.toml
   '';
 
   meta = with lib; {
