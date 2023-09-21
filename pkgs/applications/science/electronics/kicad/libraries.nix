@@ -23,6 +23,7 @@ let
 
       postInstall = lib.optional (name == "packages3d") ''
         find $out -type f -name '*.step' | parallel 'stepreduce {} {} && zip -9 {.}.stpZ {} && rm {}'
+        find $out -type f -name '*.wrl' | parallel 'gzip -vc9 {} >> {.}.wrz && rm {}'
       '';
 
       meta = rec {
