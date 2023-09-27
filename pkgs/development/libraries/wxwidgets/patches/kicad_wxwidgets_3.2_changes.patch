@@ -1,0 +1,866 @@
+diff --git a/docs/changes.txt b/docs/changes.txt
+index 5941a3cc11..3d3324d5e3 100644
+--- a/docs/changes.txt
++++ b/docs/changes.txt
+@@ -248,9 +248,11 @@ All:
+ - Use grep instead of fgrep and egrep in makefiles/scripts (#23537).
+ - Use /etc/os-release if lsb_release isn't available (Scott Talbert, #23712).
+ - Add wxUILocale::GetMonthName() and GetWeekDayName() (Ulrich Telle, #23556).
++- Support WAV files with LIST chunks under Unix (A. Jiang, #23859).
+ 
+ All (GUI):
+ 
++- Don't allow pasting characters forbidden by wxTextValidator (#10281).
+ - Fix wxFLEX_GROWMODE_ALL in wxFlexGridSizer with proportions (#23253).
+ - Fix wxEditorDialogProperty in wxPropertyGrid (#23272).
+ - Fix entering dates in wxGenericDatePicker in nb_NO and other locales
+@@ -271,10 +273,16 @@ All (GUI):
+ - Use DIPs for toolbar image sizes in wxPropertyGrid.
+ - Fix undefined behaviour in wxImage::Paste() (aurel32, #23791).
+ - Fix EVT_PRESS_AND_TAP() event macro definition (Kumazuma, #23819).
++- Fix wxFileHistory formatting after calling Load() (Hartwig Wiesmann, #23799).
++- Fix wxRichTextCtrl layout in high DPI (mbc-one, Maarten Bent, #23828).
++- Ensure current cell stays valid when wxGrid table changes (CookieLau, #23751).
+ 
+ wxGTK:
+ 
+ - Fix key codes with Shift on non-US keyboards (Ivan Sorokin, #17643, #23379).
++- Fix possible crash when using IME under Wayland (#23760).
++- Fix hiding wxGLCanvas under Wayland (Joan Bruguera, #22580).
++- Fix page origin when printing in landscape (Alex Shvartzkop, #23860).
+ - Dramatically optimize adding many items to wxChoice (Ian McInerney, #23443).
+ - Improve and document wxGLCanvas::CreateSurface() (Dan Gudmundsson, #23366).
+ - Fix loading WebKit2 extension when using wxWebView (Scott Talbert, #23497).
+@@ -309,6 +317,7 @@ wxMSW:
+ 
+ wxOSX:
+ 
++- Fix missing key events for ⌘+⎇+Letter combinations (#23671).
+ - Add support for wxDP_DROPDOWN under macOS 10.15.4+ (Lauri Nurmi, #23520).
+ - Fix initial width of empty wxTextCtrl (#23295).
+ - Fix underlined fonts sometimes appearing without underline (#23264).
+diff --git a/docs/doxygen/images/appear-animationctrl-msw.png b/docs/doxygen/images/appear-animationctrl-msw.png
+index 867234b006..ff24dd2bb8 100644
+Binary files a/docs/doxygen/images/appear-animationctrl-msw.png and b/docs/doxygen/images/appear-animationctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-bitmapbutton-msw.png b/docs/doxygen/images/appear-bitmapbutton-msw.png
+index 0bbb75f4f0..790cd2a016 100644
+Binary files a/docs/doxygen/images/appear-bitmapbutton-msw.png and b/docs/doxygen/images/appear-bitmapbutton-msw.png differ
+diff --git a/docs/doxygen/images/appear-bitmapcombobox-msw.png b/docs/doxygen/images/appear-bitmapcombobox-msw.png
+index 2323b94258..78c0f1c98d 100644
+Binary files a/docs/doxygen/images/appear-bitmapcombobox-msw.png and b/docs/doxygen/images/appear-bitmapcombobox-msw.png differ
+diff --git a/docs/doxygen/images/appear-button-msw.png b/docs/doxygen/images/appear-button-msw.png
+index a05f23269e..2f41239183 100644
+Binary files a/docs/doxygen/images/appear-button-msw.png and b/docs/doxygen/images/appear-button-msw.png differ
+diff --git a/docs/doxygen/images/appear-calendarctrl-msw.png b/docs/doxygen/images/appear-calendarctrl-msw.png
+index d24e183b4b..a785d84f96 100644
+Binary files a/docs/doxygen/images/appear-calendarctrl-msw.png and b/docs/doxygen/images/appear-calendarctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-checkbox-msw.png b/docs/doxygen/images/appear-checkbox-msw.png
+index 4fb05bb62c..1019128b77 100644
+Binary files a/docs/doxygen/images/appear-checkbox-msw.png and b/docs/doxygen/images/appear-checkbox-msw.png differ
+diff --git a/docs/doxygen/images/appear-checklistbox-msw.png b/docs/doxygen/images/appear-checklistbox-msw.png
+index e711b2f174..25798e6adf 100644
+Binary files a/docs/doxygen/images/appear-checklistbox-msw.png and b/docs/doxygen/images/appear-checklistbox-msw.png differ
+diff --git a/docs/doxygen/images/appear-choice-msw.png b/docs/doxygen/images/appear-choice-msw.png
+index aa5a025e75..47c305453d 100644
+Binary files a/docs/doxygen/images/appear-choice-msw.png and b/docs/doxygen/images/appear-choice-msw.png differ
+diff --git a/docs/doxygen/images/appear-choicebook-msw.png b/docs/doxygen/images/appear-choicebook-msw.png
+index 1a3ec5b02a..8977413ab7 100644
+Binary files a/docs/doxygen/images/appear-choicebook-msw.png and b/docs/doxygen/images/appear-choicebook-msw.png differ
+diff --git a/docs/doxygen/images/appear-collapsiblepane-msw.png b/docs/doxygen/images/appear-collapsiblepane-msw.png
+index a29ec3b3f3..ac49cebb27 100644
+Binary files a/docs/doxygen/images/appear-collapsiblepane-msw.png and b/docs/doxygen/images/appear-collapsiblepane-msw.png differ
+diff --git a/docs/doxygen/images/appear-colourpickerctrl-msw.png b/docs/doxygen/images/appear-colourpickerctrl-msw.png
+index 8ff9228ac8..fc8369dd1f 100644
+Binary files a/docs/doxygen/images/appear-colourpickerctrl-msw.png and b/docs/doxygen/images/appear-colourpickerctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-combobox-msw.png b/docs/doxygen/images/appear-combobox-msw.png
+index e49c3b9f9c..26d06fdf5e 100644
+Binary files a/docs/doxygen/images/appear-combobox-msw.png and b/docs/doxygen/images/appear-combobox-msw.png differ
+diff --git a/docs/doxygen/images/appear-comboctrl-msw.png b/docs/doxygen/images/appear-comboctrl-msw.png
+index 9b2faedb48..79ab405d76 100644
+Binary files a/docs/doxygen/images/appear-comboctrl-msw.png and b/docs/doxygen/images/appear-comboctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-commandlinkbutton-msw.png b/docs/doxygen/images/appear-commandlinkbutton-msw.png
+index 228a70a75c..b5d874dd2b 100644
+Binary files a/docs/doxygen/images/appear-commandlinkbutton-msw.png and b/docs/doxygen/images/appear-commandlinkbutton-msw.png differ
+diff --git a/docs/doxygen/images/appear-dataviewctrl-msw.png b/docs/doxygen/images/appear-dataviewctrl-msw.png
+index 17c58d4a0c..0bbcb4be76 100644
+Binary files a/docs/doxygen/images/appear-dataviewctrl-msw.png and b/docs/doxygen/images/appear-dataviewctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-dataviewtreectrl-msw.png b/docs/doxygen/images/appear-dataviewtreectrl-msw.png
+index c18e144cf3..01d4889330 100644
+Binary files a/docs/doxygen/images/appear-dataviewtreectrl-msw.png and b/docs/doxygen/images/appear-dataviewtreectrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-datepickerctrl-msw.png b/docs/doxygen/images/appear-datepickerctrl-msw.png
+index 7b2e7b72dd..81516df335 100644
+Binary files a/docs/doxygen/images/appear-datepickerctrl-msw.png and b/docs/doxygen/images/appear-datepickerctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-dirpickerctrl-msw.png b/docs/doxygen/images/appear-dirpickerctrl-msw.png
+index 9b5e6704b2..64c7fbe415 100644
+Binary files a/docs/doxygen/images/appear-dirpickerctrl-msw.png and b/docs/doxygen/images/appear-dirpickerctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-filectrl-msw.png b/docs/doxygen/images/appear-filectrl-msw.png
+index 910e972129..0d5694df21 100644
+Binary files a/docs/doxygen/images/appear-filectrl-msw.png and b/docs/doxygen/images/appear-filectrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-filepickerctrl-msw.png b/docs/doxygen/images/appear-filepickerctrl-msw.png
+index 0ecb94b146..6275f03eea 100644
+Binary files a/docs/doxygen/images/appear-filepickerctrl-msw.png and b/docs/doxygen/images/appear-filepickerctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-fontpickerctrl-msw.png b/docs/doxygen/images/appear-fontpickerctrl-msw.png
+index ee4841ef39..d8efc3702e 100644
+Binary files a/docs/doxygen/images/appear-fontpickerctrl-msw.png and b/docs/doxygen/images/appear-fontpickerctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-gauge-msw.png b/docs/doxygen/images/appear-gauge-msw.png
+index 1b86ced613..40e48ff4da 100644
+Binary files a/docs/doxygen/images/appear-gauge-msw.png and b/docs/doxygen/images/appear-gauge-msw.png differ
+diff --git a/docs/doxygen/images/appear-genericdirctrl-msw.png b/docs/doxygen/images/appear-genericdirctrl-msw.png
+index e4edcb08ae..508ec617e9 100644
+Binary files a/docs/doxygen/images/appear-genericdirctrl-msw.png and b/docs/doxygen/images/appear-genericdirctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-hyperlinkctrl-msw.png b/docs/doxygen/images/appear-hyperlinkctrl-msw.png
+index f5fed69f33..1a584203b9 100644
+Binary files a/docs/doxygen/images/appear-hyperlinkctrl-msw.png and b/docs/doxygen/images/appear-hyperlinkctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-listbook-msw.png b/docs/doxygen/images/appear-listbook-msw.png
+index 4c63b51901..5132b3dd35 100644
+Binary files a/docs/doxygen/images/appear-listbook-msw.png and b/docs/doxygen/images/appear-listbook-msw.png differ
+diff --git a/docs/doxygen/images/appear-listbox-msw.png b/docs/doxygen/images/appear-listbox-msw.png
+index a90d745e01..979c25b567 100644
+Binary files a/docs/doxygen/images/appear-listbox-msw.png and b/docs/doxygen/images/appear-listbox-msw.png differ
+diff --git a/docs/doxygen/images/appear-listctrl-msw.png b/docs/doxygen/images/appear-listctrl-msw.png
+index fa828d512a..30386f398b 100644
+Binary files a/docs/doxygen/images/appear-listctrl-msw.png and b/docs/doxygen/images/appear-listctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-notebook-msw.png b/docs/doxygen/images/appear-notebook-msw.png
+index abd65402b2..0ceba9799e 100644
+Binary files a/docs/doxygen/images/appear-notebook-msw.png and b/docs/doxygen/images/appear-notebook-msw.png differ
+diff --git a/docs/doxygen/images/appear-ownerdrawncombobox-msw.png b/docs/doxygen/images/appear-ownerdrawncombobox-msw.png
+index 470f8ebef8..5ee966a224 100644
+Binary files a/docs/doxygen/images/appear-ownerdrawncombobox-msw.png and b/docs/doxygen/images/appear-ownerdrawncombobox-msw.png differ
+diff --git a/docs/doxygen/images/appear-propertygrid-msw.png b/docs/doxygen/images/appear-propertygrid-msw.png
+index b5f2b1a5cf..4d22849925 100644
+Binary files a/docs/doxygen/images/appear-propertygrid-msw.png and b/docs/doxygen/images/appear-propertygrid-msw.png differ
+diff --git a/docs/doxygen/images/appear-radiobox-msw.png b/docs/doxygen/images/appear-radiobox-msw.png
+index 6576b031a7..806bf6c456 100644
+Binary files a/docs/doxygen/images/appear-radiobox-msw.png and b/docs/doxygen/images/appear-radiobox-msw.png differ
+diff --git a/docs/doxygen/images/appear-radiobutton-msw.png b/docs/doxygen/images/appear-radiobutton-msw.png
+index 1bf7b62c2a..859f2a2f6a 100644
+Binary files a/docs/doxygen/images/appear-radiobutton-msw.png and b/docs/doxygen/images/appear-radiobutton-msw.png differ
+diff --git a/docs/doxygen/images/appear-richtextctrl-msw.png b/docs/doxygen/images/appear-richtextctrl-msw.png
+index 7a16f87506..febef55c6f 100644
+Binary files a/docs/doxygen/images/appear-richtextctrl-msw.png and b/docs/doxygen/images/appear-richtextctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-richtooltip-msw.png b/docs/doxygen/images/appear-richtooltip-msw.png
+index afc7152a06..aad00800fd 100644
+Binary files a/docs/doxygen/images/appear-richtooltip-msw.png and b/docs/doxygen/images/appear-richtooltip-msw.png differ
+diff --git a/docs/doxygen/images/appear-scrollbar-msw.png b/docs/doxygen/images/appear-scrollbar-msw.png
+index 5d37b51f82..1bb8ba869f 100644
+Binary files a/docs/doxygen/images/appear-scrollbar-msw.png and b/docs/doxygen/images/appear-scrollbar-msw.png differ
+diff --git a/docs/doxygen/images/appear-searchctrl-msw.png b/docs/doxygen/images/appear-searchctrl-msw.png
+index e18743819e..7476cdeac5 100644
+Binary files a/docs/doxygen/images/appear-searchctrl-msw.png and b/docs/doxygen/images/appear-searchctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-slider-msw.png b/docs/doxygen/images/appear-slider-msw.png
+index f99ca1430e..de45454c2c 100644
+Binary files a/docs/doxygen/images/appear-slider-msw.png and b/docs/doxygen/images/appear-slider-msw.png differ
+diff --git a/docs/doxygen/images/appear-spinbutton-msw.png b/docs/doxygen/images/appear-spinbutton-msw.png
+index 88efe02f53..e5f14a22bc 100644
+Binary files a/docs/doxygen/images/appear-spinbutton-msw.png and b/docs/doxygen/images/appear-spinbutton-msw.png differ
+diff --git a/docs/doxygen/images/appear-spinctrl-msw.png b/docs/doxygen/images/appear-spinctrl-msw.png
+index 4b7b9687ff..122fcd4109 100644
+Binary files a/docs/doxygen/images/appear-spinctrl-msw.png and b/docs/doxygen/images/appear-spinctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-spinctrldouble-msw.png b/docs/doxygen/images/appear-spinctrldouble-msw.png
+index 21761111bf..4abd5925bc 100644
+Binary files a/docs/doxygen/images/appear-spinctrldouble-msw.png and b/docs/doxygen/images/appear-spinctrldouble-msw.png differ
+diff --git a/docs/doxygen/images/appear-staticbitmap-msw.png b/docs/doxygen/images/appear-staticbitmap-msw.png
+index 0924a34b7f..f62aaa7cf1 100644
+Binary files a/docs/doxygen/images/appear-staticbitmap-msw.png and b/docs/doxygen/images/appear-staticbitmap-msw.png differ
+diff --git a/docs/doxygen/images/appear-staticbox-msw.png b/docs/doxygen/images/appear-staticbox-msw.png
+index 6e105de3a8..aa2d822665 100644
+Binary files a/docs/doxygen/images/appear-staticbox-msw.png and b/docs/doxygen/images/appear-staticbox-msw.png differ
+diff --git a/docs/doxygen/images/appear-statictext-msw.png b/docs/doxygen/images/appear-statictext-msw.png
+index 877761f424..4ca94e4ea0 100644
+Binary files a/docs/doxygen/images/appear-statictext-msw.png and b/docs/doxygen/images/appear-statictext-msw.png differ
+diff --git a/docs/doxygen/images/appear-textctrl-msw.png b/docs/doxygen/images/appear-textctrl-msw.png
+index 0f127e71f5..987b41f749 100644
+Binary files a/docs/doxygen/images/appear-textctrl-msw.png and b/docs/doxygen/images/appear-textctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-timepickerctrl-msw.png b/docs/doxygen/images/appear-timepickerctrl-msw.png
+index 8cc4fdd76f..aeab94cff5 100644
+Binary files a/docs/doxygen/images/appear-timepickerctrl-msw.png and b/docs/doxygen/images/appear-timepickerctrl-msw.png differ
+diff --git a/docs/doxygen/images/appear-togglebutton-msw.png b/docs/doxygen/images/appear-togglebutton-msw.png
+index 0cfe4fd26a..992347cabb 100644
+Binary files a/docs/doxygen/images/appear-togglebutton-msw.png and b/docs/doxygen/images/appear-togglebutton-msw.png differ
+diff --git a/docs/doxygen/images/appear-treectrl-msw.png b/docs/doxygen/images/appear-treectrl-msw.png
+index 8be3310b33..d390c93f12 100644
+Binary files a/docs/doxygen/images/appear-treectrl-msw.png and b/docs/doxygen/images/appear-treectrl-msw.png differ
+diff --git a/docs/doxygen/images/generic/rearrangectrl.png b/docs/doxygen/images/generic/rearrangectrl.png
+index 452c4bfa3a..d63fe009ba 100644
+Binary files a/docs/doxygen/images/generic/rearrangectrl.png and b/docs/doxygen/images/generic/rearrangectrl.png differ
+diff --git a/docs/doxygen/images/generic/rearrangelist.png b/docs/doxygen/images/generic/rearrangelist.png
+index 4c975a7e8c..196e1a069e 100644
+Binary files a/docs/doxygen/images/generic/rearrangelist.png and b/docs/doxygen/images/generic/rearrangelist.png differ
+diff --git a/docs/doxygen/images/generic/simplehtmllistbox.png b/docs/doxygen/images/generic/simplehtmllistbox.png
+index ac1a5eddcc..2df44c6d6a 100644
+Binary files a/docs/doxygen/images/generic/simplehtmllistbox.png and b/docs/doxygen/images/generic/simplehtmllistbox.png differ
+diff --git a/docs/doxygen/images/overview_splitter_3d.png b/docs/doxygen/images/overview_splitter_3d.png
+index 11e43f6e2f..ce988ee020 100644
+Binary files a/docs/doxygen/images/overview_splitter_3d.png and b/docs/doxygen/images/overview_splitter_3d.png differ
+diff --git a/include/wx/unix/glegl.h b/include/wx/unix/glegl.h
+index 1a6b84bed1..d4f6276f48 100644
+--- a/include/wx/unix/glegl.h
++++ b/include/wx/unix/glegl.h
+@@ -69,7 +69,6 @@ public:
+ 
+     virtual ~wxGLCanvasEGL();
+ 
+-
+     // implement wxGLCanvasBase methods
+     // --------------------------------
+ 
+@@ -117,6 +116,12 @@ public:
+     // is responsible for freeing the pointer
+     static EGLConfig *InitConfig(const wxGLAttributes& dispAttrs);
+ 
++    // private Wayland-specific callbacks
++#if wxABI_VERSION >= 30203
++    void CreateWaylandSubsurface();
++    void DestroyWaylandSubsurface();
++#endif // wxABI_VERSION >= 3.2.3
++
+     bool m_readyToDraw;
+     wl_compositor *m_wlCompositor;
+     wl_subcompositor *m_wlSubcompositor;
+diff --git a/include/wx/valtext.h b/include/wx/valtext.h
+index 61c339a22b..c0b8fd9303 100644
+--- a/include/wx/valtext.h
++++ b/include/wx/valtext.h
+@@ -155,6 +155,8 @@ protected:
+     wxArrayString        m_excludes;
+ 
+ private:
++    void OnPaste(wxClipboardTextEvent& event);
++
+     wxDECLARE_NO_ASSIGN_CLASS(wxTextValidator);
+     wxDECLARE_DYNAMIC_CLASS(wxTextValidator);
+     wxDECLARE_EVENT_TABLE();
+diff --git a/interface/wx/textctrl.h b/interface/wx/textctrl.h
+index 9eb18eb4f2..1864074b90 100644
+--- a/interface/wx/textctrl.h
++++ b/interface/wx/textctrl.h
+@@ -1767,7 +1767,7 @@ public:
+     ///@{
+ 
+     /**
+-        Enable the automatic replacement of new lines characters in a
++        Enables the automatic replacement of new lines characters in a
+         single-line text field with spaces under macOS.
+ 
+         This feature is enabled by default and will replace any new line (`\n`)
+@@ -1780,14 +1780,44 @@ public:
+         the restriction preventing multiple lines from being entered unless
+         wxTE_MULTILINE is specified.
+ 
+-        @note This function is only available for macOS/Cocoa. It also has no
+-        effect if the wxTE_MULTILINE flag is set on a text control.
++        @note Has no effect if the wxTE_MULTILINE flag is set on a text control.
+ 
+         @onlyfor{wxosx}
+         @since 3.1.6
+     */
+     void OSXEnableNewLineReplacement(bool enable);
+ 
++    /**
++        Enables the automatic replacement of ASCII quotation marks and
++        apostrophes with their typographic symbols.
++
++        This feature is enabled by default.
++
++        @onlyfor{wxosx}
++        @since 3.1.1
++    */
++    void OSXEnableAutomaticQuoteSubstitution(bool enable);
++
++    /**
++        Enables the automatic conversion of two ASCII hyphens into an m-dash.
++
++        This feature is enabled by default.
++
++        @onlyfor{wxosx}
++        @since 3.1.1
++    */
++    void OSXEnableAutomaticDashSubstitution(bool enable);
++
++    /**
++        Disables all automatic character substitutions.
++
++        @onlyfor{wxosx}
++        @since 3.1.1
++
++        @see OSXEnableAutomaticQuoteSubstitution(), OSXEnableAutomaticDashSubstitution()
++    */
++    void OSXDisableAllSmartSubstitutions();
++
+     ///@}
+ 
+     ///@{
+diff --git a/samples/event/gestures.cpp b/samples/event/gestures.cpp
+index 8a030bff3f..bd4bc30bd0 100644
+--- a/samples/event/gestures.cpp
++++ b/samples/event/gestures.cpp
+@@ -23,7 +23,7 @@ MyGestureFrame::MyGestureFrame()
+     SetSizeHints(wxMin(800,dsplySz.GetWidth()), wxMin(600,dsplySz.GetHeight()));
+ 
+     // Log to the text control
+-    delete wxLog::SetActiveTarget(new wxLogTextCtrl(m_logText));
++    m_logOld = wxLog::SetActiveTarget(new wxLogTextCtrl(m_logText));
+ 
+     // Bind all gestures to the same event handler, which must run before
+     // the other handlers, to clear the log window
+@@ -64,6 +64,7 @@ MyGesturePanel::MyGesturePanel(MyGestureFrame *parent)
+ 
+ void MyGestureFrame::OnQuit(wxCloseEvent& WXUNUSED(event))
+ {
++    delete wxLog::SetActiveTarget(m_logOld);
+     Destroy();
+ }
+ 
+diff --git a/samples/event/gestures.h b/samples/event/gestures.h
+index c2add7f344..1b2f7f43da 100644
+--- a/samples/event/gestures.h
++++ b/samples/event/gestures.h
+@@ -12,6 +12,7 @@ public:
+     void OnQuit(wxCloseEvent& event);
+ 
+ private:
++    wxLog *m_logOld;
+     wxTextCtrl *m_logText;
+ };
+ 
+diff --git a/src/common/filehistorycmn.cpp b/src/common/filehistorycmn.cpp
+index 0c0070c938..0c93e71814 100644
+--- a/src/common/filehistorycmn.cpp
++++ b/src/common/filehistorycmn.cpp
+@@ -271,6 +271,7 @@ void wxFileHistoryBase::Load(const wxConfigBase& config)
+     }
+ 
+     AddFilesToMenu();
++    DoRefreshLabels();
+ }
+ 
+ void wxFileHistoryBase::Save(wxConfigBase& config)
+diff --git a/src/common/valtext.cpp b/src/common/valtext.cpp
+index 9fdcddddfd..39d8c864dc 100644
+--- a/src/common/valtext.cpp
++++ b/src/common/valtext.cpp
+@@ -30,6 +30,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ 
++#include "wx/clipbrd.h"
+ #include "wx/combo.h"
+ 
+ // ----------------------------------------------------------------------------
+@@ -57,6 +58,7 @@ static bool wxIsNumeric(const wxString& val)
+ wxIMPLEMENT_DYNAMIC_CLASS(wxTextValidator, wxValidator);
+ wxBEGIN_EVENT_TABLE(wxTextValidator, wxValidator)
+     EVT_CHAR(wxTextValidator::OnChar)
++    EVT_TEXT_PASTE(wxID_ANY, wxTextValidator::OnPaste)
+ wxEND_EVENT_TABLE()
+ 
+ wxTextValidator::wxTextValidator(long style, wxString *val)
+@@ -304,6 +306,69 @@ void wxTextValidator::OnChar(wxKeyEvent& event)
+     event.Skip(false);
+ }
+ 
++void wxTextValidator::OnPaste(wxClipboardTextEvent& event)
++{
++#if wxUSE_CLIPBOARD
++    // Filter out invalid characters from the clipboard contents as it
++    // shouldn't be possible to sneak them into the control in such a way.
++    //
++    // This seems better than not allowing to paste anything at all if there is
++    // anything invalid on the clipboard, e.g. it is more user-friendly to omit
++    // any trailing spaces in a control not allowing them than to refuse to
++    // paste a string with some spaces into it completely.
++    //
++    // Out of abundance of caution also prefer to let the control do its own
++    // thing if there are no invalid characters at all, as we can be sure it
++    // does the right thing in all cases, while our code might not deal with
++    // some edge cases correctly.
++    wxClipboardLocker lock;
++    wxTextDataObject data;
++    wxTheClipboard->GetData(data);
++    const wxString& text = data.GetText();
++
++    wxString valid;
++    valid.reserve(text.length());
++
++    bool hasInvalid = false;
++
++    // Examine all characters one by one.
++    for ( wxString::const_iterator i = text.begin(), end = text.end();
++          i != end; ++i )
++    {
++        const wxUniChar ch = *i;
++
++        if ( IsValidChar(ch) )
++        {
++            valid += ch;
++        }
++        else // Invalid character.
++        {
++            // Only beep once per paste, not for every invalid character.
++            if ( !hasInvalid && !wxValidator::IsSilent() )
++                wxBell();
++
++            hasInvalid = true;
++        }
++    }
++
++    // If we can't let the control paste everything, do it ourselves.
++    if ( hasInvalid )
++    {
++        wxTextEntry * const entry = GetTextEntry();
++        if ( entry )
++        {
++            entry->WriteText(valid);
++
++            // Skip the call to wxEvent::Skip() below, preventing the normal
++            // paste from happening.
++            return;
++        }
++    }
++#endif // wxUSE_CLIPBOARD
++
++    event.Skip();
++}
++
+ bool wxTextValidator::IsValidChar(const wxUniChar& c) const
+ {
+     if ( !m_validatorStyle ) // no filtering if HasFlag(wxFILTER_NONE)
+diff --git a/src/generic/grid.cpp b/src/generic/grid.cpp
+index 1472793bdd..6de9d9f814 100644
+--- a/src/generic/grid.cpp
++++ b/src/generic/grid.cpp
+@@ -2975,6 +2975,8 @@ wxGrid::SetTable(wxGridTableBase *table,
+ 
+     InvalidateBestSize();
+ 
++    UpdateCurrentCellOnRedim();
++
+     return m_created;
+ }
+ 
+diff --git a/src/gtk/print.cpp b/src/gtk/print.cpp
+index 614c5a2600..99b71fb7b3 100644
+--- a/src/gtk/print.cpp
++++ b/src/gtk/print.cpp
+@@ -702,6 +702,11 @@ int wxGtkPrintDialog::ShowModal()
+     gtk_print_operation_set_default_page_setup (printOp, pgSetup);
+     g_object_unref(pgSetup);
+ 
++    // By default the origin of the Cairo context is in the upper left
++    // corner of the printable area, but wx convention is to have it in
++    // the upper left corner of the paper, so change this.
++    gtk_print_operation_set_use_full_page(printOp, TRUE);
++
+     // Show the dialog if needed.
+     GError* gError = NULL;
+     GtkPrintOperationResult response = gtk_print_operation_run
+@@ -2198,15 +2203,6 @@ void wxGtkPrinterDCImpl::StartPage()
+     // is used in GTK+ itself and wouldn't work correctly if we applied these
+     // transformations before it is called.
+ 
+-    // By default the origin of the Cairo context is in the upper left
+-    // corner of the printable area. We need to translate it so that it
+-    // is in the upper left corner of the paper (without margins)
+-    GtkPageSetup *setup = gtk_print_context_get_page_setup( m_gpc );
+-    gdouble ml, mt;
+-    ml = gtk_page_setup_get_left_margin (setup, GTK_UNIT_POINTS);
+-    mt = gtk_page_setup_get_top_margin (setup, GTK_UNIT_POINTS);
+-    cairo_translate(m_cairo, -ml, -mt);
+-
+ #if wxCAIRO_SCALE
+     cairo_scale( m_cairo, 72.0 / (double)m_resolution, 72.0 / (double)m_resolution );
+ #endif
+diff --git a/src/gtk/window.cpp b/src/gtk/window.cpp
+index eb8d44df69..63f23dfd50 100644
+--- a/src/gtk/window.cpp
++++ b/src/gtk/window.cpp
+@@ -5329,16 +5329,15 @@ void wxWindowGTK::Update()
+     if (m_widget && gtk_widget_get_mapped(m_widget) && m_width > 0 && m_height > 0)
+     {
+         GdkDisplay* display = gtk_widget_get_display(m_widget);
+-        // Flush everything out to the server, and wait for it to finish.
+-        // This ensures nothing will overwrite the drawing we are about to do.
+-        gdk_display_sync(display);
++        // If window has just been shown, drawing may not work unless pending
++        // requests queued for the windowing system are flushed first.
++        gdk_display_flush(display);
+ 
+         GdkWindow* window = GTKGetDrawingWindow();
+         if (window == NULL)
+             window = gtk_widget_get_window(m_widget);
+         gdk_window_process_updates(window, true);
+ 
+-        // Flush again, but no need to wait for it to finish
+         gdk_display_flush(display);
+     }
+ }
+@@ -6095,14 +6094,34 @@ bool wxWindowGTK::DoPopupMenu( wxMenu *menu, int x, int y )
+     GdkWindow* window = gtk_widget_get_window(m_wxwindow ? m_wxwindow : m_widget);
+     if (wxGTKImpl::IsWayland(window) && wx_is_at_least_gtk3(22))
+     {
+-        if (x == -1 && y == -1)
+-            gtk_menu_popup_at_pointer(GTK_MENU(menu->m_menu), NULL);
+-        else
++        GdkEvent* currentEvent = gtk_get_current_event();
++        GdkEvent* event = currentEvent;
++        GdkDevice* device = event ? gdk_event_get_device(event) : nullptr;
++        if (device == nullptr)
++        {
++            GdkSeat* seat = gdk_display_get_default_seat(gdk_window_get_display(window));
++            device = gdk_seat_get_pointer(seat);
++        }
++        GdkEventButton eventTmp = { };
++        if (event == nullptr)
+         {
+-            const GdkRectangle rect = { x, y, 1, 1 };
+-            gtk_menu_popup_at_rect(GTK_MENU(menu->m_menu),
+-                window, &rect, GDK_GRAVITY_NORTH_WEST, GDK_GRAVITY_NORTH_WEST, NULL);
++            // An event is needed to avoid a Gtk-WARNING "no trigger event for menu popup".
++            // If a real one is not available, use a temporary with the fields
++            // set that GTK is going to use.
++            eventTmp.type = GDK_BUTTON_RELEASE;
++            eventTmp.time = GDK_CURRENT_TIME;
++            eventTmp.device = device;
++            event = (GdkEvent*)&eventTmp;
+         }
++        if (x == -1 && y == -1)
++            gdk_window_get_device_position(window, device, &x, &y, nullptr);
++
++        const GdkRectangle rect = { x, y, 1, 1 };
++        gtk_menu_popup_at_rect(GTK_MENU(menu->m_menu),
++            window, &rect, GDK_GRAVITY_NORTH_WEST, GDK_GRAVITY_NORTH_WEST, event);
++
++        if (currentEvent)
++            gdk_event_free(currentEvent);
+     }
+     else
+ #endif // GTK_CHECK_VERSION(3,22,0)
+diff --git a/src/osx/cocoa/window.mm b/src/osx/cocoa/window.mm
+index 1e367330d7..5c49221b03 100644
+--- a/src/osx/cocoa/window.mm
++++ b/src/osx/cocoa/window.mm
+@@ -2169,6 +2169,7 @@ void wxWidgetCocoaImpl::insertText(NSString* text, WXWidget slf, void *_cmd)
+                 wxKeyEvent wxevent(wxEVT_KEY_DOWN);
+                 SetupKeyEvent( wxevent, GetLastNativeKeyDownEvent() );
+                 result = GetWXPeer()->OSXHandleKeyEvent(wxevent);
++                SetKeyDownSent();
+             }
+ 
+             // ...and wxEVT_CHAR.
+@@ -3888,6 +3889,15 @@ bool wxWidgetCocoaImpl::DoHandleKeyEvent(NSEvent *event)
+             [[(NSScrollView*)m_osxView documentView] interpretKeyEvents:[NSArray arrayWithObject:event]];
+         else
+             [m_osxView interpretKeyEvents:[NSArray arrayWithObject:event]];
++
++        if ( IsInNativeKeyDown() && !WasKeyDownSent())
++        {
++            wxLogTrace(TRACE_KEYS, "Emulating missing key down event");
++
++            wxKeyEvent wxevent(wxEVT_KEY_DOWN);
++            SetupKeyEvent( wxevent, GetLastNativeKeyDownEvent() );
++            GetWXPeer()->OSXHandleKeyEvent(wxevent);
++        }
+         return true;
+     }
+     else
+diff --git a/src/richtext/richtextctrl.cpp b/src/richtext/richtextctrl.cpp
+index 2b6bbbae30..e7f71803c6 100644
+--- a/src/richtext/richtextctrl.cpp
++++ b/src/richtext/richtextctrl.cpp
+@@ -3042,15 +3042,17 @@ bool wxRichTextCtrl::RecreateBuffer(const wxSize& size)
+     if (sz.x < 1 || sz.y < 1)
+         return false;
+ 
+-    if (!m_bufferBitmap.IsOk() || m_bufferBitmap.GetWidth() < sz.x || m_bufferBitmap.GetHeight() < sz.y)
++    if (!m_bufferBitmap.IsOk() || m_bufferBitmap.GetLogicalWidth() < sz.x || m_bufferBitmap.GetLogicalHeight() < sz.y)
++    {
+         // As per https://github.com/wxWidgets/wxWidgets/issues/14403, prevent very inefficient fix to alpha bits of
+         // destination by making the backing bitmap 24-bit. Note that using 24-bit depth breaks painting of
+         // scrolled areas on wxWidgets 2.8.
+-#if defined(__WXMSW__) && wxCHECK_VERSION(3,0,0)
+-        m_bufferBitmap = wxBitmap(sz.x, sz.y, 24);
+-#else
+-        m_bufferBitmap = wxBitmap(sz.x, sz.y);
++        int depth = -1;
++#if defined(__WXMSW__)
++        depth = 24;
+ #endif
++        m_bufferBitmap.CreateWithDIPSize(sz, GetDPIScaleFactor(), depth);
++    }
+     return m_bufferBitmap.IsOk();
+ }
+ #endif
+diff --git a/src/unix/glegl.cpp b/src/unix/glegl.cpp
+index c35273cadd..1fd6bc5940 100644
+--- a/src/unix/glegl.cpp
++++ b/src/unix/glegl.cpp
+@@ -401,6 +401,14 @@ EGLDisplay wxGLCanvasEGL::GetDisplay()
+ // Helper declared as friend in the header and so can access m_wlSubsurface.
+ void wxEGLUpdatePosition(wxGLCanvasEGL* win)
+ {
++    if ( !win->m_wlSubsurface )
++    {
++        // In some circumstances such as when reparenting a canvas between two hidden
++        // toplevel windows, GTK will call size-allocate before mapping the canvas
++        // Ignore the call, the position will be fixed when it is mapped
++        return;
++    }
++
+     int x, y;
+     gdk_window_get_origin(win->GTKGetDrawingWindow(), &x, &y);
+     wl_subsurface_set_position(win->m_wlSubsurface, x, y);
+@@ -438,7 +446,7 @@ static void wl_frame_callback_handler(void* data,
+                                       struct wl_callback *,
+                                       uint32_t)
+ {
+-    wxLogTrace(TRACE_EGL, "In frame callback handler");
++    wxLogTrace(TRACE_EGL, "In frame callback handler for window %p", data);
+ 
+     wxGLCanvasEGL *glc = static_cast<wxGLCanvasEGL *>(data);
+     glc->m_readyToDraw = true;
+@@ -451,6 +459,17 @@ static const struct wl_callback_listener wl_frame_listener = {
+     wl_frame_callback_handler
+ };
+ 
++static gboolean gtk_glcanvas_map_callback(GtkWidget *, GdkEventAny *, wxGLCanvasEGL *win)
++{
++    win->CreateWaylandSubsurface();
++    return FALSE;
++}
++
++static void gtk_glcanvas_unmap_callback(GtkWidget *, wxGLCanvasEGL *win)
++{
++    win->DestroyWaylandSubsurface();
++}
++
+ static void gtk_glcanvas_size_callback(GtkWidget *widget,
+                                        GtkAllocation *,
+                                        wxGLCanvasEGL *win)
+@@ -474,16 +493,16 @@ bool wxGLCanvasEGL::CreateSurface()
+         return false;
+     }
+ 
+-    if ( m_surface != EGL_NO_SURFACE )
+-    {
+-        eglDestroySurface(m_surface, m_display);
+-        m_surface = EGL_NO_SURFACE;
+-    }
+-
+     GdkWindow *window = GTKGetDrawingWindow();
+ #ifdef GDK_WINDOWING_X11
+     if (wxGTKImpl::IsX11(window))
+     {
++        if ( m_surface != EGL_NO_SURFACE )
++        {
++            eglDestroySurface(m_surface, m_display);
++            m_surface = EGL_NO_SURFACE;
++        }
++
+         m_xwindow = GDK_WINDOW_XID(window);
+         m_surface = eglCreatePlatformWindowSurface(m_display, *m_config,
+                                                    &m_xwindow, NULL);
+@@ -492,10 +511,16 @@ bool wxGLCanvasEGL::CreateSurface()
+ #ifdef GDK_WINDOWING_WAYLAND
+     if (wxGTKImpl::IsWayland(window))
+     {
++        if ( m_wlSurface )
++        {
++            // Already created (can happen when the canvas is un-realized then
++            // re-realized, for example, when the canvas is re-parented)
++            return true;
++        }
++
+         int w = gdk_window_get_width(window);
+         int h = gdk_window_get_height(window);
+         struct wl_display *display = gdk_wayland_display_get_wl_display(gdk_window_get_display(window));
+-        struct wl_surface *surface = gdk_wayland_window_get_wl_surface(window);
+         struct wl_registry *registry = wl_display_get_registry(display);
+         wl_registry_add_listener(registry, &wl_registry_listener, this);
+         wl_display_roundtrip(display);
+@@ -506,21 +531,25 @@ bool wxGLCanvasEGL::CreateSurface()
+         }
+         m_wlSurface = wl_compositor_create_surface(m_wlCompositor);
+         m_wlRegion = wl_compositor_create_region(m_wlCompositor);
+-        m_wlSubsurface = wl_subcompositor_get_subsurface(m_wlSubcompositor,
+-                                                         m_wlSurface,
+-                                                         surface);
+         wl_surface_set_input_region(m_wlSurface, m_wlRegion);
+-        wl_subsurface_set_desync(m_wlSubsurface);
+-        wxEGLUpdatePosition(this);
+         int scale = gdk_window_get_scale_factor(window);
+         wl_surface_set_buffer_scale(m_wlSurface, scale);
+         m_wlEGLWindow = wl_egl_window_create(m_wlSurface, w * scale,
+                                              h * scale);
+         m_surface = eglCreatePlatformWindowSurface(m_display, *m_config,
+                                                    m_wlEGLWindow, NULL);
+-        m_wlFrameCallbackHandler = wl_surface_frame(surface);
+-        wl_callback_add_listener(m_wlFrameCallbackHandler,
+-                                 &wl_frame_listener, this);
++
++        // We need to use "map-event" instead of "map" to ensure that the
++        // widget's underlying Wayland surface has been created.
++        // Otherwise, gdk_wayland_window_get_wl_surface may return NULL,
++        // for example when hiding then showing a window containing a canvas.
++        gtk_widget_add_events(m_widget, GDK_STRUCTURE_MASK);
++        g_signal_connect(m_widget, "map-event",
++                         G_CALLBACK(gtk_glcanvas_map_callback), this);
++        // However, note the use of "unmap" instead of the later "unmap-event"
++        // Not unmapping the canvas as soon as possible causes problems when reparenting
++        g_signal_connect(m_widget, "unmap",
++                         G_CALLBACK(gtk_glcanvas_unmap_callback), this);
+         g_signal_connect(m_widget, "size-allocate",
+                          G_CALLBACK(gtk_glcanvas_size_callback), this);
+ 
+@@ -547,9 +576,35 @@ wxGLCanvasEGL::~wxGLCanvasEGL()
+         eglDestroySurface(m_display, m_surface);
+ #ifdef GDK_WINDOWING_WAYLAND
+     g_clear_pointer(&m_wlEGLWindow, wl_egl_window_destroy);
+-    g_clear_pointer(&m_wlSubsurface, wl_subsurface_destroy);
+     g_clear_pointer(&m_wlSurface, wl_surface_destroy);
++#endif
++}
++
++void wxGLCanvasEGL::CreateWaylandSubsurface()
++{
++#ifdef GDK_WINDOWING_WAYLAND
++    GdkWindow *window = GTKGetDrawingWindow();
++    struct wl_surface *surface = gdk_wayland_window_get_wl_surface(window);
++
++    m_wlSubsurface = wl_subcompositor_get_subsurface(m_wlSubcompositor,
++                                                     m_wlSurface,
++                                                     surface);
++    wxCHECK_RET( m_wlSubsurface, "Unable to get EGL subsurface" );
++
++    wl_subsurface_set_desync(m_wlSubsurface);
++    wxEGLUpdatePosition(this);
++    m_wlFrameCallbackHandler = wl_surface_frame(surface);
++    wl_callback_add_listener(m_wlFrameCallbackHandler,
++                             &wl_frame_listener, this);
++#endif
++}
++
++void wxGLCanvasEGL::DestroyWaylandSubsurface()
++{
++#ifdef GDK_WINDOWING_WAYLAND
++    g_clear_pointer(&m_wlSubsurface, wl_subsurface_destroy);
+     g_clear_pointer(&m_wlFrameCallbackHandler, wl_callback_destroy);
++    m_readyToDraw = false;
+ #endif
+ }
+ 
+@@ -658,14 +713,22 @@ bool wxGLCanvasEGL::SwapBuffers()
+ #ifdef GDK_WINDOWING_X11
+     if (wxGTKImpl::IsX11(window))
+     {
++        // TODO: We need to check if it's really shown on screen, i.e. if it's
++        // not completely occluded even if it hadn't been explicitly hidden.
+         if ( !IsShownOnScreen() )
+         {
+             // Trying to draw on a hidden window is useless and can actually be
+             // harmful if the compositor blocks in eglSwapBuffers() in this
+             // case, so avoid it.
+-            wxLogTrace(TRACE_EGL, "Not drawing hidden window");
++            wxLogTrace(TRACE_EGL, "Window %p is hidden, not drawing", this);
+             return false;
+         }
++
++        // As long as the TODO comment above is not resolved, we must disable
++        // blocking in eglSwapBuffers(), as it would make all the other, not
++        // occluded, application windows impossible to use. This is clearly not
++        // ideal, but better than making the application unusable.
++        eglSwapInterval(m_display, 0);
+     }
+ #endif // GDK_WINDOWING_X11
+ #ifdef GDK_WINDOWING_WAYLAND
+@@ -676,7 +739,7 @@ bool wxGLCanvasEGL::SwapBuffers()
+         // worst if we're called before the window is realized.
+         if ( !m_readyToDraw )
+         {
+-            wxLogTrace(TRACE_EGL, "Not ready to draw yet");
++            wxLogTrace(TRACE_EGL, "Window %p is not not ready to draw yet", this);
+             return false;
+         }
+ 
+@@ -689,7 +752,7 @@ bool wxGLCanvasEGL::SwapBuffers()
+     }
+ #endif // GDK_WINDOWING_WAYLAND
+ 
+-    wxLogTrace(TRACE_EGL, "Swapping buffers");
++    wxLogTrace(TRACE_EGL, "Swapping buffers for window %p", this);
+ 
+     return eglSwapBuffers(m_display, m_surface);
+ }
+@@ -702,10 +765,12 @@ bool wxGLCanvasEGL::IsShownOnScreen() const
+         case wxDisplayX11:
+             return GetXWindow() && wxGLCanvasBase::IsShownOnScreen();
+         case wxDisplayWayland:
+-            return m_readyToDraw && wxGLCanvasBase::IsShownOnScreen();
+-        default:
+-            return false;
++            return m_wlSubsurface && wxGLCanvasBase::IsShownOnScreen();
++        case wxDisplayNone:
++            break;
+     }
++
++    return false;
+ }
+ 
+ #endif // wxUSE_GLCANVAS && wxUSE_GLCANVAS_EGL
+diff --git a/src/unix/sound.cpp b/src/unix/sound.cpp
+index 7c8dbe16b1..2df18e58b9 100644
+--- a/src/unix/sound.cpp
++++ b/src/unix/sound.cpp
+@@ -660,7 +660,20 @@ bool wxSound::LoadWAV(const void* data_, size_t length, bool copyData)
+     if (waveformat.uiSize != 16)
+         return false;
+ 
+-    if (memcmp(&data[FMT_INDEX + waveformat.uiSize + 8], "data", 4) != 0)
++    // Skip the "LIST" chunk if present.
++    wxUint32 data_offset = FMT_INDEX + waveformat.uiSize + 8;
++    if (memcmp(&data[data_offset], "LIST", 4) == 0)
++    {
++        wxUint32 list_chunk_length;
++        memcpy(&list_chunk_length, &data[data_offset + 4], 4);
++        list_chunk_length = wxUINT32_SWAP_ON_BE(list_chunk_length);
++        if (length - (data_offset + 8u) < list_chunk_length)
++            return false;
++
++        data_offset += (list_chunk_length + 8u);
++    }
++
++    if (memcmp(&data[data_offset], "data", 4) != 0)
+         return false;
+ 
+     if (waveformat.uiFormatTag != WAVE_FORMAT_PCM)
+@@ -694,7 +707,7 @@ bool wxSound::LoadWAV(const void* data_, size_t length, bool copyData)
+ 
+     // get the sound data size
+     wxUint32 ul;
+-    memcpy(&ul, &data[FMT_INDEX + waveformat.uiSize + 12], 4);
++    memcpy(&ul, &data[data_offset + 4u], 4);
+     ul = wxUINT32_SWAP_ON_BE(ul);
+ 
+     // ensure we actually have at least that much data in the input
+@@ -716,8 +729,7 @@ bool wxSound::LoadWAV(const void* data_, size_t length, bool copyData)
+     else
+         m_data->m_dataWithHeader = const_cast<wxUint8*>(data);
+ 
+-    m_data->m_data =
+-        (&m_data->m_dataWithHeader[FMT_INDEX + waveformat.uiSize + 8]);
++    m_data->m_data = (&m_data->m_dataWithHeader[data_offset]);
+ 
+     return true;
+ }
+diff --git a/version-script.in b/version-script.in
+index a32525455f..23b2b5fe7a 100644
+--- a/version-script.in
++++ b/version-script.in
+@@ -29,6 +29,8 @@
+ # public symbols added in 3.2.3 (please keep in alphabetical order):
+ @WX_VERSION_TAG@.3 {
+     extern "C++" {
++        "wxGLCanvasEGL::CreateWaylandSubsurface";
++        "wxGLCanvasEGL::DestroyWaylandSubsurface";
+         "wxUILocale::GetMonthName";
+         "wxUILocale::GetWeekDayName";
+     };

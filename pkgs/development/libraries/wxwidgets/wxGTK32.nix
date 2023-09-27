@@ -50,14 +50,18 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "wxwidgets";
-  version = "3.2.2.1";
+  version = "3.2";
 
   src = fetchFromGitHub {
     owner = "wxWidgets";
     repo = "wxWidgets";
-    rev = "v${version}";
-    hash = "sha256-u+INjo9EkW433OYoCDZpw5pcW1DyF/t/J5ntLZX+6aA=";
+    rev = "a7bfae0e3036e85e0daf36900cc2f26bae5bc59c";
+    hash = "sha256-ctU0KLLBnYNSTsXs8BXYlz+gYDgvsEd5T7EXMp4wUo4=";
   };
+
+  patches = [
+    ./patches/kicad_wxwidgets_3.2_changes.patch
+  ];
 
   nativeBuildInputs = [ pkg-config ];
 
