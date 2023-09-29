@@ -4,6 +4,7 @@
 , setuptools
 , pythonOlder
 , fetchPypi
+, fetchFromGitHub
 , substituteAll
 
 # build
@@ -41,13 +42,16 @@
 
 buildPythonPackage rec {
   pname = "wxPython";
-  version = "4.2.1";
+  version = "master";
   format = "other";
   disabled = pythonOlder "3.7";
 
-  src = fetchPypi {
-    inherit pname version;
-    hash = "sha256-5I3iEaZga/By7D+neHcda3RsALf0uXDrWHKN31bRPVw=";
+  src = fetchFromGitHub {
+    owner = "wxWidgets";
+    repo = "Phoenix";
+    rev = "a1184286703cf24c4b88e5bc14cf2979c1b1ea00";
+    fetchSubmodules = true;
+    hash = "sha256-pnarCtOw19HlxSZ8Z0Pl3NPHLcU+cBDYoW9B8l+/KaA=";
   };
 
   patches = [
