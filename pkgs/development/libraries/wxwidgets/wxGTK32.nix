@@ -17,9 +17,7 @@
 , pcre2
 , pkg-config
 , xorgproto
-, compat28 ? false
 , compat30 ? true
-, unicode ? true
 , withMesa ? !stdenv.isDarwin
 , withWebKit ? stdenv.isDarwin
 , webkitgtk
@@ -32,6 +30,7 @@
 , AVFoundation
 , AVKit
 , WebKit
+, debug ? true
 }:
 let
   catch = fetchFromGitHub {
@@ -50,18 +49,22 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "wxwidgets";
-  version = "3.2";
+  version = "master";
 
   src = fetchFromGitHub {
     owner = "wxWidgets";
     repo = "wxWidgets";
-    rev = "a7bfae0e3036e85e0daf36900cc2f26bae5bc59c";
-    hash = "sha256-ctU0KLLBnYNSTsXs8BXYlz+gYDgvsEd5T7EXMp4wUo4=";
+    rev = "df6366ff57371f9d2d41f748514d25259e393203";
+    hash = "sha256-abZnr/PjcpoKo/71tZjnJOjEdCkf9WTc7gkdVQjHs44=";
+    fetchSubmodules = true;
   };
 
   patches = [
-    ./patches/kicad_wxwidgets_3.2_changes.patch
+    #./patches/kicad_wxwidgets_3.2_changes.patch
+    ./patches/kicad_wxwidgets_master_and_testing_state.patch
   ];
+
+  cmakeBuildType = if debug then "Debug" else "Release";
 
   nativeBuildInputs = [ pkg-config ];
 
@@ -104,10 +107,9 @@ stdenv.mkDerivation rec {
     "--disable-monolithic"
     "--enable-mediactrl"
     "--with-nanosvg"
-    (if compat28 then "--enable-compat28" else "--disable-compat28")
     (if compat30 then "--enable-compat30" else "--disable-compat30")
-  ] ++ lib.optional unicode "--enable-unicode"
-  ++ lib.optional withMesa "--with-opengl"
+  ] ++ lib.optional withMesa "--with-opengl"
+  ++ lib.optional debug "--enable-debug"
   ++ lib.optionals stdenv.isDarwin [
     "--with-osx_cocoa"
     "--with-libiconv"
@@ -137,7 +139,7 @@ stdenv.mkDerivation rec {
   enableParallelBuilding = true;
 
   passthru = {
-    inherit compat28 compat30 unicode;
+    inherit compat30;
   };
 
   meta = with lib; {
