@@ -16,9 +16,9 @@
 , stable ? true
 , withNgspice ? !stdenv.isDarwin
 , libngspice
-, withScripting ? true
+, withScripting ? false
 , python3
-, debug ? false
+, debug ? true
 , sanitizeAddress ? false
 , sanitizeThreads ? false
 , with3d ? true
