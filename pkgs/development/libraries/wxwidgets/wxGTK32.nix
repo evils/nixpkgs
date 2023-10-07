@@ -36,8 +36,8 @@ let
   catch = fetchFromGitHub {
     owner = "wxWidgets";
     repo = "Catch";
-    rev = "5f5e4cecd1cafc85e109471356dec29e778d2160";
-    hash = "sha256-fB/E17tiAicAkq88Je/YFYohJ6EHJOO54oQaqiR/OzY=";
+    rev = "18bf9ebaefbefb3018528138a85322cff5aba93e";
+    hash = "sha256-bFP6EmW3CpUjYYHkD9TRhUYXfJOMcWvbjINLVS6tAIY=";
   };
 
   nanosvg = fetchFromGitHub {
@@ -54,14 +54,14 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "wxWidgets";
     repo = "wxWidgets";
-    rev = "df6366ff57371f9d2d41f748514d25259e393203";
-    hash = "sha256-abZnr/PjcpoKo/71tZjnJOjEdCkf9WTc7gkdVQjHs44=";
+    rev = "543fd3fabcb6d88a6e220520c41501c3f961dd55";
+    hash = "sha256-EoQUUwNGtjy2uZ+/KredZfeBvSzToZ/RmUCcvxFv9wI=";
     fetchSubmodules = true;
   };
 
   patches = [
     #./patches/kicad_wxwidgets_3.2_changes.patch
-    ./patches/kicad_wxwidgets_master_and_testing_state.patch
+    #./patches/kicad_wxwidgets_master_and_testing_state.patch
   ];
 
   cmakeBuildType = if debug then "Debug" else "Release";
