@@ -49,6 +49,10 @@
 , Cocoa
 , CoreMedia
 , withUnfree ? false
+, pkcs11helper
+, krb5
+, icu
+, fuse3
 
 # tries to compile and run generate_argument_docbook.c
 , withManPages ? stdenv.buildPlatform.canExecute stdenv.hostPlatform
@@ -58,13 +62,7 @@
 
 let
   cmFlag = flag: if flag then "ON" else "OFF";
-  disabledTests = [
-    # this one is probably due to our sandbox
-    {
-      dir = "libfreerdp/crypto/test";
-      file = "Test_x509_cert_info.c";
-    }
-  ] ++ lib.optionals stdenv.isDarwin [
+  disabledTests = lib.optionals stdenv.isDarwin [
     {
       dir = "winpr/libwinpr/sysinfo/test";
       file = "TestGetComputerName.c";
@@ -76,13 +74,13 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "freerdp";
-  version = "2.11.2";
+  version = "3.0.0";
 
   src = fetchFromGitHub {
     owner = "FreeRDP";
     repo = "FreeRDP";
     rev = version;
-    sha256 = "sha256-buInsfjzpY4EF7bSojy42YNXssbNriSQGYBFE/DUJ7A=";
+    sha256 = "sha256-ayXQxq065SnP4Z4fRQHKvO7GLQp5SA9VOXGR7Gb/DnA=";
   };
 
   postPatch = ''
@@ -140,6 +138,10 @@ stdenv.mkDerivation rec {
     pcre2
     pcsclite
     zlib
+    pkcs11helper
+    krb5
+    icu
+    fuse3
   ] ++ optionals stdenv.isLinux [
     alsa-lib
     systemd
