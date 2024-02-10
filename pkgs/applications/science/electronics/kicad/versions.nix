@@ -19,7 +19,7 @@
         footprints.rev =	"7061fc9847ecc1b838e60dc6826db534028494f6";
         footprints.sha256 =	"1az6fzh1lma71mj12bc4bblnmzjayrxhkb8w9rjvlhvvgv33cdmy";
         packages3d.rev =	"d7345b34daaa23acf0d4506ed937fb424b5b18cd";
-        packages3d.sha256 =	"0xzyi4mgyifwc6dppdzh6jq294mkj0a71cwkqw2ymz1kfbksw626";
+        packages3d.sha256 =	"sha256-0jJyrymCb0KB3Rf6GSHyGcCglp7Wg672CZ0MNQnEr2E=";
       };
     };
   };
@@ -41,7 +41,7 @@
         footprints.rev =	"7061fc9847ecc1b838e60dc6826db534028494f6";
         footprints.sha256 =	"1az6fzh1lma71mj12bc4bblnmzjayrxhkb8w9rjvlhvvgv33cdmy";
         packages3d.rev =	"d7345b34daaa23acf0d4506ed937fb424b5b18cd";
-        packages3d.sha256 =	"0xzyi4mgyifwc6dppdzh6jq294mkj0a71cwkqw2ymz1kfbksw626";
+        packages3d.sha256 =	"sha256-0jJyrymCb0KB3Rf6GSHyGcCglp7Wg672CZ0MNQnEr2E=";
       };
     };
   };
@@ -63,7 +63,7 @@
         footprints.rev =	"7ba15cf3f64c245c751adee5751cb6621bfa1900";
         footprints.sha256 =	"1a2nw989qi5c4zwa5z6dfsxq6nfvrzjdim0lgqhvspqi0kiqbl0a";
         packages3d.rev =	"7005c85cded7a5d59fd3413eb5912d46301e6d12";
-        packages3d.sha256 =	"04r54zwfyz17w1j7v2hk4dylvvazhivlwkpl0xki1d4vn3w66d9m";
+        packages3d.sha256 =	"sha256-JeOZetb/huNsI+Kc4ReHTNxvawTMYdjCqa66OV6thus=";
       };
     };
   };
