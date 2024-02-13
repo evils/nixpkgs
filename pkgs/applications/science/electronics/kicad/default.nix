@@ -73,7 +73,7 @@
 #         owner = "code";
 #         repo = "kicad";
 #         rev = "fd22fe8e374ce71d57e9f683ba996651aa69fa4e";
-#         sha256 = "sha256-F8qugru/jU3DgZSpQXQhRGNFSk0ybFRkpyWb7HAGBdc=";
+#         hash = "sha256-F8qugru/jU3DgZSpQXQhRGNFSk0ybFRkpyWb7HAGBdc=";
 #       };
 #     };
 #   });
@@ -96,7 +96,7 @@ let
     owner = "code";
     repo = "kicad";
     rev = versionsImport.${baseName}.kicadVersion.src.rev;
-    sha256 = versionsImport.${baseName}.kicadVersion.src.sha256;
+    hash = versionsImport.${baseName}.kicadVersion.src.hash;
   };
 
   libSrcFetch =
