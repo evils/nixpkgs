@@ -1,6 +1,7 @@
 { lib
 , stdenv
 , cmake
+, ninja
 , libGLU
 , libGL
 , zlib
@@ -124,6 +125,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [
     cmake
+    ninja
     doxygen
     graphviz
     pkg-config
