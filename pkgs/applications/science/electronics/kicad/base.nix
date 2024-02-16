@@ -106,7 +106,7 @@ stdenv.mkDerivation rec {
   ++ optionals (withI18n) [
     "-DKICAD_BUILD_I18N=ON"
   ]
-  ++ optionals (!doInstallCheck) [
+  ++ optionals (!doCheck) [
     "-DKICAD_BUILD_QA_TESTS=OFF"
   ]
   ++ optionals (debug) [
@@ -182,10 +182,9 @@ stdenv.mkDerivation rec {
   HOME = "$TMP";
 
   # debug builds fail all but the python test
-  doInstallCheck = !(debug);
-  installCheckTarget = "test";
+  doCheck = !(debug);
 
-  nativeInstallCheckInputs = [
+  nativeCheckInputs = [
     (python.withPackages(ps: with ps; [
       numpy
       pytest
