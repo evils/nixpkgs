@@ -97,7 +97,7 @@ stdenv.mkDerivation rec {
     "-DKICAD_USE_EGL=ON"
     "-DOCC_INCLUDE_DIR=${opencascade-occt}/include/opencascade"
     # https://gitlab.com/kicad/code/kicad/-/issues/17133
-    "-DCMAKE_CTEST_ARGUMENTS='--exclude-regex;qa_spice'"
+    #"-DCMAKE_CTEST_ARGUMENTS='--exclude-regex;qa_spice'"
   ]
   ++ optional (stable && !withNgspice) "-DKICAD_SPICE=OFF"
   ++ optionals (!withScripting) [
