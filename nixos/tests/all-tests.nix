@@ -359,6 +359,7 @@ in
   cinnamon = runTest ./cinnamon.nix;
   cinnamon-wayland = runTest ./cinnamon-wayland.nix;
   cjdns = runTest ./cjdns.nix;
+  clarissa = runTest ./clarissa.nix {};
   clatd = runTest ./clatd.nix;
   clickhouse = import ./clickhouse {
     inherit runTest;
