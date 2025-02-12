@@ -2,7 +2,7 @@
 #!nix-shell -i bash -p coreutils git nix-prefetch curl jq
 # shellcheck shell=bash enable=all
 
-set -e
+set -ex
 shopt -s inherit_errexit
 
 # this script will generate versions.nix in the right location
@@ -19,6 +19,7 @@ shopt -s inherit_errexit
 #   won't work when running in parallel?
 # remove items left in /nix/store?
 # reuse hashes of revs already checked elsewhere (to avoid redownloading testing's packages3d)
+# the change to nix-prefetch broke bootstrapping the versions.nix file
 
 # nixpkgs' update.nix passes in UPDATE_NIX_PNAME to indicate which package is being updated
 # assigning a default value to that as shellcheck doesn't like the use of unassigned variables
