@@ -57,13 +57,13 @@ in
 freecad-utils.makeCustomizable (
   stdenv.mkDerivation (finalAttrs: {
     pname = "freecad";
-    version = "f3980c8a6fd65f82d3e61d229d26ad0eb57265c1";
+    version = "7a70843be2f1ec85dee4184b2f9c4df5dbf6ff6b";
 
     src = fetchFromGitHub {
       owner = "FreeCAD";
       repo = "FreeCAD";
       rev = finalAttrs.version;
-      hash = "sha256-Rpvtq2YSEFEjVc1AORsXX0OJRwyg1xGKsmNftfKyhq4=";
+      hash = "sha256-TLh29qNoLmcLBZM8HhZSeAMEljKblEYx6G1ooMb195Y=";
       fetchSubmodules = true;
     };
 
@@ -105,16 +105,6 @@ freecad-utils.makeCustomizable (
     patches = [
       ./0001-NIXOS-don-t-ignore-PYTHONPATH.patch
       ./0002-FreeCad-OndselSolver-pkgconfig.patch
-      (fetchpatch {
-        url = "https://github.com/FreeCAD/FreeCAD/commit/8e04c0a3dd9435df0c2dec813b17d02f7b723b19.patch?full_index=1";
-        hash = "sha256-H6WbJFTY5/IqEdoi5N+7D4A6pVAmZR4D+SqDglwS18c=";
-      })
-      # Inform Coin to use EGL when on Wayland
-      # https://github.com/FreeCAD/FreeCAD/pull/21917
-      (fetchpatch {
-        url = "https://github.com/FreeCAD/FreeCAD/commit/60aa5ff3730d77037ffad0c77ba96b99ef0c7df3.patch?full_index=1";
-        hash = "sha256-K6PWQ1U+/fsjDuir7MiAKq71CAIHar3nKkO6TKYl32k=";
-      })
     ];
 
     postPatch = ''
