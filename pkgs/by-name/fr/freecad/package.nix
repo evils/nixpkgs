@@ -103,11 +103,6 @@ freecad-utils.makeCustomizable (
       ./0002-FreeCad-OndselSolver-pkgconfig.patch
     ];
 
-    postPatch = ''
-      substituteInPlace src/Mod/Fem/femmesh/gmshtools.py \
-        --replace-fail 'self.gmsh_bin = "gmsh"' 'self.gmsh_bin = "${lib.getExe gmsh}"'
-    '';
-
     cmakeFlags = [
       "-Wno-dev" # turns off warnings which otherwise makes it hard to see what is going on
       (lib.cmakeBool "BUILD_DRAWING" true)
