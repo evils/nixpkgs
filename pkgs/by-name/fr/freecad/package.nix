@@ -57,13 +57,13 @@ in
 freecad-utils.makeCustomizable (
   stdenv.mkDerivation (finalAttrs: {
     pname = "freecad";
-    version = "e2e75f10392787cee9b6baf8f1efd7ef34d32cb2";
+    version = "3ae8f3d57a74b62d3a55a02dbe6d6e1538544dc4";
 
     src = fetchFromGitHub {
       owner = "FreeCAD";
       repo = "FreeCAD";
       rev = finalAttrs.version;
-      hash = "sha256-VMX2vno6dX+eYlElLfzUK/KafYEg0ngipjv28lpQibI=";
+      hash = "sha256-dIhnHnweggP5STYt0TgDRsh1f4YlZVN5dnCyui8Knq8=";
       fetchSubmodules = true;
     };
 
@@ -104,7 +104,7 @@ freecad-utils.makeCustomizable (
 
     patches = [
       ./0001-NIXOS-don-t-ignore-PYTHONPATH.patch
-      ./0002-FreeCad-OndselSolver-pkgconfig.patch
+      #./0002-FreeCad-OndselSolver-pkgconfig.patch
     ];
 
     cmakeFlags = [
